@@ -1,9 +1,3 @@
-Below is a **clean, production-grade rewrite of your README**, adapted **specifically for the Agricultural Synthetic Data Generation system** you are building.
-I have **preserved the structure**, **removed law-specific language**, and **aligned every phase with crop–weather–soil reasoning, negative samples, and Hindi output generation**.
-
-You can **directly replace your existing README with this**, or use it as the canonical reference.
-
----
 
 # Agricultural Synthetic Reasoning Data Generation System
 
