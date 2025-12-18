@@ -1,0 +1,32 @@
+group: weather
+description: "Weather / climate scenario buckets. Attributes fetched from climate datasets."
+
+attributes:
+  - avg_temperature_c
+  - max_temperature_c
+  - rainfall_mm
+  - humidity_percent
+  - wind_speed_kph
+  - weather_stress_flag  
+
+entries:
+  - id: weather_hot_dry
+    label: "Hot and Dry Weather"
+
+  - id: weather_hot_humid
+    label: "Hot and Humid Weather"
+
+  - id: weather_cool_dry
+    label: "Cool and Dry Weather"
+
+  - id: weather_cool_humid
+    label: "Cool and Humid Weather"
+
+  - id: weather_heavy_rain
+    label: "Heavy Rainfall Conditions"
+
+  - id: weather_moderate
+    label: "Moderate Weather"
+
+  - id: weather_arid
+    label: "Arid Weather"

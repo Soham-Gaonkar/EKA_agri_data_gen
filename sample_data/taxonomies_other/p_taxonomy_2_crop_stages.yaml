@@ -1,0 +1,34 @@
+group: crop_stage
+description: "Crop phenology stages. Attributes: stage name and stage-specific demand indicators."
+
+attributes:
+  - stage_id
+  - stage_name
+  - typical_duration_days
+  - nutrient_demand_profile   # e.g., {'N':'high','P':'low','K':'medium'}
+  - sensitivity_to_stress     # low/medium/high
+
+entries:
+  - id: stage_sowing
+    label: "Sowing / planting"
+
+  - id: stage_seedling
+    label: "Seedling / emergence"
+
+  - id: stage_tillering
+    label: "Tillering / vegetative spread"
+
+  - id: stage_vegetative
+    label: "Vegetative growth"
+
+  - id: stage_booting
+    label: "Booting (pre-flower)"
+
+  - id: stage_flowering
+    label: "Flowering"
+
+  - id: stage_grain_filling
+    label: "Grain filling"
+
+  - id: stage_maturity
+    label: "Maturity / harvest"

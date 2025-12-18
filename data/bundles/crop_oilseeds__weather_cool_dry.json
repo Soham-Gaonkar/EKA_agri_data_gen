@@ -1,0 +1,21 @@
+{
+  "bundle_id": "crop_oilseeds__weather_cool_dry",
+  "crop": {
+    "crop_name": "oilseeds",
+    "pH_preference_range": null,
+    "rainfall_range_mm": null,
+    "temperature_tolerance": null,
+    "yield_reference": null,
+    "_warning": "No dataset entry found for crop 'oilseeds'. Using fallback."
+  },
+  "weather": {
+    "avg_temperature_c": 13.6,
+    "max_temperature_c": 31.358400000000003,
+    "rainfall_mm": 0.0,
+    "humidity_percent": 81.0,
+    "wind_speed_kph": 6.5,
+    "weather_stress_flag": "no_stress",
+    "location_name": "Dindori",
+    "region": "Madhya Pradesh"
+  }
+}

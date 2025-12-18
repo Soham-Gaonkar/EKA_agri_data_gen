@@ -1,0 +1,21 @@
+{
+  "bundle_id": "crop_sugarcane__weather_cool_humid",
+  "crop": {
+    "crop_name": "sugarcane",
+    "pH_preference_range": null,
+    "rainfall_range_mm": null,
+    "temperature_tolerance": null,
+    "yield_reference": null,
+    "_warning": "No dataset entry found for crop 'sugarcane'. Using fallback."
+  },
+  "weather": {
+    "avg_temperature_c": 20.0,
+    "max_temperature_c": 37.80800000000001,
+    "rainfall_mm": 1.1,
+    "humidity_percent": 93.0,
+    "wind_speed_kph": 7.6,
+    "weather_stress_flag": "fungal_risk",
+    "location_name": "Pithoragarh",
+    "region": "Uttarakhand"
+  }
+}

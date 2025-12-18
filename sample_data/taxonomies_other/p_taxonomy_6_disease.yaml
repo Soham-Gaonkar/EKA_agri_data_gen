@@ -1,0 +1,29 @@
+group: diseases
+description: "Disease scenarios and triggers."
+
+attributes:
+  - disease_id
+  - disease_name
+  - affected_crops
+  - typical_weather_triggers  # e.g., high_humidity, waterlogged
+  - typical_stages_affected
+  - severity_scale
+
+entries:
+  - id: disease_rice_blast
+    label: "Rice blast"
+
+  - id: disease_sheath_blight
+    label: "Sheath blight"
+
+  - id: disease_bacterial_blight
+    label: "Bacterial blight"
+
+  - id: disease_wheat_rust
+    label: "Wheat rust"
+
+  - id: disease_late_blight
+    label: "Late blight (potato/tomato)"
+
+  - id: disease_root_rot
+    label: "Root rot / damping off"

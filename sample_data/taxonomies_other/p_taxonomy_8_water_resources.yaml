@@ -1,0 +1,23 @@
+group: water_resources
+description: "Water availability and irrigation access indicators."
+
+attributes:
+  - groundwater_depth_m
+  - irrigation_source             # canal, well, borewell, tank, rainfed
+  - typical_well_yield_lph
+  - irrigation_capacity_mm_per_event
+  - monthly_irrigation_frequency
+  - water_rights_status
+
+entries:
+  - id: water_rainfed
+    label: "Rainfed only"
+
+  - id: water_well_borewell
+    label: "Groundwater (well/borewell) access"
+
+  - id: water_canal_irrigation
+    label: "Canal irrigation"
+
+  - id: water_communal_tank
+    label: "Local tank / pond irrigation"

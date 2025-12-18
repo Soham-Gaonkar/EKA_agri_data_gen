@@ -1,0 +1,21 @@
+{
+  "bundle_id": "crop_sugarcane__weather_hot_humid",
+  "crop": {
+    "crop_name": "sugarcane",
+    "pH_preference_range": null,
+    "rainfall_range_mm": null,
+    "temperature_tolerance": null,
+    "yield_reference": null,
+    "_warning": "No dataset entry found for crop 'sugarcane'. Using fallback."
+  },
+  "weather": {
+    "avg_temperature_c": 32.0,
+    "max_temperature_c": 49.8176,
+    "rainfall_mm": 0.0,
+    "humidity_percent": 80.0,
+    "wind_speed_kph": 13.0,
+    "weather_stress_flag": "no_stress",
+    "location_name": "Arwal",
+    "region": "Bihar"
+  }
+}

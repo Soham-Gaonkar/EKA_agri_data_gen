@@ -1,0 +1,36 @@
+group: symptoms
+description: "Observed plant/crop health symptoms. Attributes are descriptors used by sampler and retriever."
+
+attributes:
+  - symptom_code
+  - symptom_label_hi
+  - symptom_description
+  - typical_onset_days
+  - typical_location_on_plant   # lower_leaves, upper_leaves, whole_plant
+  - symptom_severity_scale      # mild/medium/severe
+  - probable_categories         # e.g., nutrient_moisture_issue, pest_damage, disease
+
+entries:
+  - id: symptom_yellow_leaves
+    label: "पत्तियों का पीला पड़ना"
+
+  - id: symptom_brown_spots
+    label: "भूरे/काले धब्बे"
+
+  - id: symptom_leaf_curl
+    label: "पत्ती का मुड़ना / रोल होना"
+
+  - id: symptom_wilting
+    label: "मुरझाना / विल्टिंग"
+
+  - id: symptom_stunting
+    label: "विकास रुकना / stunting"
+
+  - id: symptom_necrosis
+    label: "पत्तियों का सूखना / necrosis"
+
+  - id: symptom_spotting
+    label: "स्पॉटिंग / lesions"
+
+
+

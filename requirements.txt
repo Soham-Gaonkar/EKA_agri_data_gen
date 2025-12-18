@@ -1,0 +1,9 @@
+datasets 
+typer
+huggingface_hub 
+kaggle 
+pandas 
+pyarrow
+pymongo
+dotenv
+google.generativeai

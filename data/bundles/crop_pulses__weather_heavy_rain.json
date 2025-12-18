@@ -1,0 +1,21 @@
+{
+  "bundle_id": "crop_pulses__weather_heavy_rain",
+  "crop": {
+    "crop_name": "pulses",
+    "pH_preference_range": null,
+    "rainfall_range_mm": null,
+    "temperature_tolerance": null,
+    "yield_reference": null,
+    "_warning": "No dataset entry found for crop 'pulses'. Using fallback."
+  },
+  "weather": {
+    "avg_temperature_c": 23.4,
+    "max_temperature_c": 41.199600000000004,
+    "rainfall_mm": 26.2,
+    "humidity_percent": 95.0,
+    "wind_speed_kph": 10.1,
+    "weather_stress_flag": "flood_stress",
+    "location_name": "Kadapa",
+    "region": "Andhra Pradesh"
+  }
+}

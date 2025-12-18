@@ -1,0 +1,21 @@
+{
+  "bundle_id": "crop_sugarcane__weather_moderate",
+  "crop": {
+    "crop_name": "sugarcane",
+    "pH_preference_range": null,
+    "rainfall_range_mm": null,
+    "temperature_tolerance": null,
+    "yield_reference": null,
+    "_warning": "No dataset entry found for crop 'sugarcane'. Using fallback."
+  },
+  "weather": {
+    "avg_temperature_c": 28.7,
+    "max_temperature_c": 46.537200000000006,
+    "rainfall_mm": 0.0,
+    "humidity_percent": 56.0,
+    "wind_speed_kph": 9.7,
+    "weather_stress_flag": "no_stress",
+    "location_name": "Agra",
+    "region": "Uttar Pradesh"
+  }
+}

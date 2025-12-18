@@ -1,0 +1,21 @@
+{
+  "bundle_id": "crop_wheat__weather_hot_humid",
+  "crop": {
+    "crop_name": "wheat",
+    "pH_preference_range": null,
+    "rainfall_range_mm": null,
+    "temperature_tolerance": null,
+    "yield_reference": null,
+    "_warning": "No dataset entry found for crop 'wheat'. Using fallback."
+  },
+  "weather": {
+    "avg_temperature_c": 30.1,
+    "max_temperature_c": 47.927200000000006,
+    "rainfall_mm": 0.0,
+    "humidity_percent": 72.0,
+    "wind_speed_kph": 16.6,
+    "weather_stress_flag": "no_stress",
+    "location_name": "Buxar",
+    "region": "Bihar"
+  }
+}

@@ -1,0 +1,29 @@
+group: pests
+description: "Pest scenarios; attributes help sampler fetch seasonality and pressure."
+
+attributes:
+  - pest_id
+  - pest_name
+  - affected_crops                 # list
+  - typical_pressure_seasons      # list of seasons/months
+  - visible_signs                 # e.g., hole_on_stem, honeydew, leaf_mining
+  - control_thresholds            # economic thresholds if available
+
+entries:
+  - id: pest_rice_stemborer
+    label: "Rice stem borer"
+
+  - id: pest_aphids
+    label: "Aphids / sucking pests"
+
+  - id: pest_thrips
+    label: "Thrips"
+
+  - id: pest_fall_armyworm
+    label: "Fall Armyworm"
+
+  - id: pest_whitefly
+    label: "Whitefly"
+
+  - id: pest_borers
+    label: "General borer group"

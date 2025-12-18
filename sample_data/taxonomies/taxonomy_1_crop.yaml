@@ -1,0 +1,40 @@
+group: crop
+description: "Crop types and canonical crop attributes."
+
+attributes:
+  - crop_name
+  - pH_preference_range
+  - rainfall_range_mm  
+  - temperature_tolerance    
+  - yield_reference          
+
+entries:
+  - id: crop_rice
+    label: "Rice (धान)"
+
+  - id: crop_maize
+    label: "Maize (मक्का)"
+
+  - id: crop_apple
+    label: "Apple (सेब)"
+
+  - id: crop_banana
+    label: "Banana (केला)"
+
+  - id: crop_lentil
+    label: "Lentil (मसूर)"
+
+  - id: crop_papaya
+    label: "Papaya (पपीता)"
+
+  - id: crop_pomegranate
+    label: "Pomegranate (अनार)"
+
+  - id: crop_jute
+    label: "Jute (जूट)"
+
+  - id: crop_orange
+    label: "Orange (संतरा)"
+
+  - id: crop_watermelon
+    label: "Watermelon (तरबूज)"

@@ -1,0 +1,29 @@
+# 1) Ignore everything by default
+/*
+
+# 2) But keep these (whitelist)
+!.gitignore
+!README.md
+!pyproject.toml
+!requirements.txt
+# !run.txt
+!src/
+!src/**
+!tests/
+!sample_data
+!data
+
+# 3) Optional: keep sample_data if you want it
+# !sample_data/
+# !sample_data/**
+
+# 4) Always ignore secrets & junk
+.env
+**/.env
+configs/.env
+*.env
+tmp/
+**/__pycache__/
+**/*.pyc
+.DS_Store
+agri_env/

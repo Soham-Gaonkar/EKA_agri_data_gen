@@ -1,0 +1,5 @@
+Metadata-Version: 2.4
+Name: agri-data-gen-lib
+Version: 0.0.1
+Summary: Synthetic agronomic reasoning data generator
+Requires-Python: >=3.9

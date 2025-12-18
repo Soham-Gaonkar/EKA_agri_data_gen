@@ -1,0 +1,29 @@
+{
+  "bundle_id": "crop_rice__weather_heavy_rain",
+  "crop": {
+    "crop_name": "rice",
+    "pH_preference_range": [
+      5.005306977,
+      7.868474653
+    ],
+    "rainfall_range_mm": [
+      182.5616319,
+      298.5601175
+    ],
+    "temperature_tolerance": [
+      20.0454142,
+      26.92995077
+    ],
+    "yield_reference": null
+  },
+  "weather": {
+    "avg_temperature_c": 23.6,
+    "max_temperature_c": 41.422000000000004,
+    "rainfall_mm": 20.04,
+    "humidity_percent": 99.0,
+    "wind_speed_kph": 14.4,
+    "weather_stress_flag": "flood_stress",
+    "location_name": "South Salmara",
+    "region": "Assam"
+  }
+}

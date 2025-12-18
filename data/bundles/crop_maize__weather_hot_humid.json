@@ -1,0 +1,29 @@
+{
+  "bundle_id": "crop_maize__weather_hot_humid",
+  "crop": {
+    "crop_name": "maize",
+    "pH_preference_range": [
+      5.513697923,
+      6.995843776
+    ],
+    "rainfall_range_mm": [
+      60.65171481,
+      109.7515385
+    ],
+    "temperature_tolerance": [
+      18.04185513,
+      26.54986394
+    ],
+    "yield_reference": null
+  },
+  "weather": {
+    "avg_temperature_c": 30.9,
+    "max_temperature_c": 48.705600000000004,
+    "rainfall_mm": 0.0,
+    "humidity_percent": 72.0,
+    "wind_speed_kph": 4.0,
+    "weather_stress_flag": "no_stress",
+    "location_name": "Karimganj",
+    "region": "Assam"
+  }
+}

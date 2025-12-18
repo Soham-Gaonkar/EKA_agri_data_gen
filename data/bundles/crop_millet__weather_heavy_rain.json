@@ -1,0 +1,21 @@
+{
+  "bundle_id": "crop_millet__weather_heavy_rain",
+  "crop": {
+    "crop_name": "millet",
+    "pH_preference_range": null,
+    "rainfall_range_mm": null,
+    "temperature_tolerance": null,
+    "yield_reference": null,
+    "_warning": "No dataset entry found for crop 'millet'. Using fallback."
+  },
+  "weather": {
+    "avg_temperature_c": 25.0,
+    "max_temperature_c": 42.812000000000005,
+    "rainfall_mm": 24.8,
+    "humidity_percent": 94.0,
+    "wind_speed_kph": 9.0,
+    "weather_stress_flag": "flood_stress",
+    "location_name": "Perambalur",
+    "region": "Tamil Nadu"
+  }
+}

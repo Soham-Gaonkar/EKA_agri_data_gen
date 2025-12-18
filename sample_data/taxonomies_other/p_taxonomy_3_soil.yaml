@@ -1,0 +1,50 @@
+group: soil
+description: "Soil scenario buckets. Attributes to be filled from soil dataset."
+
+attributes:
+  - soil_texture                # e.g., sand, loam, clay, silt, silty_clay
+  - soil_ph                     # numeric
+  - typical_ph_range            # (min,max) if available
+  - organic_matter_percent      # numeric
+  - soil_moisture_percent       # latest estimate or sampled
+  - topsoil_depth_cm
+  - bulk_density_g_cm3
+  - available_nitrogen_kg_ha
+  - available_phosphorus_kg_ha
+  - available_potassium_kg_ha
+  - micronutrient_zn_mg_kg
+  - micronutrient_fe_mg_kg
+  - soil_temperature_c
+
+entries:
+  - id: soil_loam
+    label: "Loam"
+    description: "Balanced loam soils common for cereals and vegetables."
+
+  - id: soil_clay_heavy
+    label: "Heavy clay"
+    description: "High water retention, slow drainage."
+
+  - id: soil_sandy_arid
+    label: "Sandy / arid"
+    description: "Fast drainage, low organic matter."
+
+  - id: soil_black_cotton
+    label: "Black cotton"
+    description: "High swelling-shrinkage; retains moisture."
+
+  - id: soil_saline_alkali
+    label: "Saline / alkaline"
+    description: "High EC/pH; reclamation required for many crops."
+
+  - id: soil_loamy_sand
+    label: "Loamy sand"
+    description: "Light textured with low water holding."
+
+  - id: soil_silty
+    label: "Silty"
+    description: "Fine particles, moderate water holding."
+
+  - id: soil_peat_rich
+    label: "Peaty / organic-rich"
+    description: "High organic matter, acidic tendency in some places."

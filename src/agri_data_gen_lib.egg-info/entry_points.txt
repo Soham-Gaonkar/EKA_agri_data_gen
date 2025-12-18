@@ -1,0 +1,2 @@
+[console_scripts]
+eval-data-gen = agri_data_gen.cli.main:main

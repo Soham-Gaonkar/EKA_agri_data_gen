@@ -1,0 +1,29 @@
+{
+  "bundle_id": "crop_rice__weather_arid",
+  "crop": {
+    "crop_name": "rice",
+    "pH_preference_range": [
+      5.005306977,
+      7.868474653
+    ],
+    "rainfall_range_mm": [
+      182.5616319,
+      298.5601175
+    ],
+    "temperature_tolerance": [
+      20.0454142,
+      26.92995077
+    ],
+    "yield_reference": null
+  },
+  "weather": {
+    "avg_temperature_c": 34.9,
+    "max_temperature_c": 52.708800000000004,
+    "rainfall_mm": 0.0,
+    "humidity_percent": 39.0,
+    "wind_speed_kph": 14.0,
+    "weather_stress_flag": "heat_stress",
+    "location_name": "Gorakhpur",
+    "region": "Haryana"
+  }
+}

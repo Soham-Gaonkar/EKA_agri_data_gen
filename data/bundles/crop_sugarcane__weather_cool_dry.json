@@ -1,0 +1,21 @@
+{
+  "bundle_id": "crop_sugarcane__weather_cool_dry",
+  "crop": {
+    "crop_name": "sugarcane",
+    "pH_preference_range": null,
+    "rainfall_range_mm": null,
+    "temperature_tolerance": null,
+    "yield_reference": null,
+    "_warning": "No dataset entry found for crop 'sugarcane'. Using fallback."
+  },
+  "weather": {
+    "avg_temperature_c": 18.0,
+    "max_temperature_c": 35.7508,
+    "rainfall_mm": 0.0,
+    "humidity_percent": 99.0,
+    "wind_speed_kph": 3.6,
+    "weather_stress_flag": "no_stress",
+    "location_name": "Churachandpur",
+    "region": "Manipur"
+  }
+}

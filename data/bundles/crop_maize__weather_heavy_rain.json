@@ -1,0 +1,29 @@
+{
+  "bundle_id": "crop_maize__weather_heavy_rain",
+  "crop": {
+    "crop_name": "maize",
+    "pH_preference_range": [
+      5.513697923,
+      6.995843776
+    ],
+    "rainfall_range_mm": [
+      60.65171481,
+      109.7515385
+    ],
+    "temperature_tolerance": [
+      18.04185513,
+      26.54986394
+    ],
+    "yield_reference": null
+  },
+  "weather": {
+    "avg_temperature_c": 21.3,
+    "max_temperature_c": 39.086800000000004,
+    "rainfall_mm": 37.9,
+    "humidity_percent": 100.0,
+    "wind_speed_kph": 3.6,
+    "weather_stress_flag": "flood_stress",
+    "location_name": "Saiha",
+    "region": "Mizoram"
+  }
+}

@@ -1,0 +1,21 @@
+{
+  "bundle_id": "crop_pulses__weather_arid",
+  "crop": {
+    "crop_name": "pulses",
+    "pH_preference_range": null,
+    "rainfall_range_mm": null,
+    "temperature_tolerance": null,
+    "yield_reference": null,
+    "_warning": "No dataset entry found for crop 'pulses'. Using fallback."
+  },
+  "weather": {
+    "avg_temperature_c": 30.2,
+    "max_temperature_c": 48.03840000000001,
+    "rainfall_mm": 0.0,
+    "humidity_percent": 33.0,
+    "wind_speed_kph": 13.3,
+    "weather_stress_flag": "heat_stress",
+    "location_name": "Ganganagar",
+    "region": "Rajasthan"
+  }
+}
