@@ -9,17 +9,15 @@
 1. Project Vision
 2. System Architecture
 3. Installation & Setup
-
    * Prerequisites
    * Installation
    * Environment Variables
-4. Core Workflow & Key Components
-
+4. Command-Line Interface (CLI) & Usage
+5. Core Workflow & Key Components
    * Phase 1: Taxonomy Definition & Seeding
    * Phase 2: Dataset-Grounded Scenario Bundling
    * Phase 3: Reasoning & Advisory Generation
    * Phase 4: Validation, Resume & Scaling
-5. Command-Line Interface (CLI) & Usage
 6. Directory Structure
 
 ---
@@ -166,31 +164,26 @@ DATA_DIR="data"
 
 ## Command-Line Interface (CLI)
 
-### Run entire pipeline
+### Run entire pipeline (create batch and generation (non-batch))
 ```bash
 python -m agri_data_gen.cli.main pipeline-run
 ```
 
-### Load Taxonomies
+### Batch API processing
+```bash
+python -m agri_data_gen.cli.main batch-run
+```
+
+### Load Taxonomies to MongoDB
 
 ```bash
 python -m agri_data_gen.cli.main load-taxonomies
 ```
 
----
-
-### Build Scenario Bundles
+### Delete taxonomies from MongoDB:
 
 ```bash
-python -m agri_data_gen.cli.main build-bundles
-```
-
----
-
-### Generate Synthetic Reasoning Data
-
-```bash
-python -m agri_data_gen.cli.main generate-data
+python -m agri_data_gen.cli.main reset-taxonomies
 ```
 
 
@@ -215,11 +208,6 @@ Each taxonomy:
 * defines attributes
 * lists valid scenario IDs
 
-Seed taxonomies into MongoDB:
-
-```bash
-python -m agri_data_gen.cli.main load-taxonomies
-```
 
 ---
 

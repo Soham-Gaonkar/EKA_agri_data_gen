@@ -59,12 +59,17 @@ class CropAdapter(BaseAdapter):
             ph_min = float(sub["ph"].min())
             ph_max = float(sub["ph"].max())
 
+            # return {
+            #     "crop_name": crop_name,
+            #     "pH_preference_range": [ph_min, ph_max],
+            #     "rainfall_range_mm": [rain_min, rain_max],
+            #     "temperature_tolerance": [temp_min, temp_max],
+            # }
             return {
                 "crop_name": crop_name,
-                "pH_preference_range": [ph_min, ph_max],
-                "rainfall_range_mm": [rain_min, rain_max],
-                "temperature_tolerance": [temp_min, temp_max],
-                "yield_reference": None
+                "pH_preference_range": None,
+                "rainfall_range_mm": None,
+                "temperature_tolerance": None,
             }
 
         # Case 2: crop missing → Fallback mode (NO CRASH)
@@ -73,6 +78,4 @@ class CropAdapter(BaseAdapter):
             "pH_preference_range": None,
             "rainfall_range_mm": None,
             "temperature_tolerance": None,
-            "yield_reference": None,
-            "_warning": f"No dataset entry found for crop '{crop_name}'. Using fallback."
         }

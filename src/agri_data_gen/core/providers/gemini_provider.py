@@ -1,5 +1,5 @@
 import os
-from google.generativeai import GenerativeModel, configure
+from google import genai
 from dotenv import load_dotenv
 
 
@@ -12,12 +12,15 @@ class GeminiProvider:
     """
 
     def __init__(self, model_name: str = "models/gemini-2.5-flash"):
-        api_key = os.getenv("GOOGLE_API_KEY_2")
+        api_key = os.getenv("GOOGLE_API_KEY_3")
         if not api_key:
             raise RuntimeError("Set GOOGLE_API_KEY env var first.")
-        configure(api_key=api_key)
-        self.model = GenerativeModel(model_name)
-
+        self.client = genai.Client(api_key=api_key)
+        self.model_name = model_name
+        
     def generate(self, prompt: str) -> str:
-        resp = self.model.generate_content(prompt)
-        return resp.text.strip()
+        response = self.client.models.generate_content(
+                    model=self.model_name,
+                    contents=prompt
+                )        
+        return reresponsesp.text.strip()

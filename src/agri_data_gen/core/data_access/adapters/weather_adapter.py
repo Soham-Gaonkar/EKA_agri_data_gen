@@ -118,28 +118,35 @@ class WeatherAdapter(BaseAdapter):
         if bucket_df.empty:
             # If no rows match, fallback to random row (but mark as 'approx')
             row = self.df.sample(1).iloc[0]
-            stress_flag = "approximate_due_to_no_matches"
         else:
             row = bucket_df.sample(1).iloc[0]
-            stress_flag = self._infer_weather_stress(entry_id)
+
+        # return {
+        #     "avg_temperature_c": float(row["temperature_celsius"]),
+        #     "max_temperature_c": float(row["temperature_fahrenheit"]) * 0.556,   # approx conversion 
+        #     "rainfall_mm": float(row["precip_mm"]),
+        #     "humidity_percent": float(row["humidity"]),
+        #     "wind_speed_kph": float(row["wind_kph"]),
+        #     "location_name": row["location_name"],
+        #     "region": row["region"],
+        # }
 
         return {
-            "avg_temperature_c": float(row["temperature_celsius"]),
-            "max_temperature_c": float(row["temperature_fahrenheit"]) * 0.556,   # approx conversion 
-            "rainfall_mm": float(row["precip_mm"]),
-            "humidity_percent": float(row["humidity"]),
-            "wind_speed_kph": float(row["wind_kph"]),
-            "weather_stress_flag": stress_flag,
-            "location_name": row["location_name"],
-            "region": row["region"],
+            "avg_temperature_c": None,
+            "max_temperature_c": None,   # approx conversion 
+            "rainfall_mm": None,
+            "humidity_percent": None,
+            "wind_speed_kph": None,
+            "location_name": None,
+            "region": None,
         }
 
-    # WEATHER STRESS LABEL
-    def _infer_weather_stress(self, bucket: str) -> str:
-        if bucket in ["weather_hot_dry", "weather_arid"]:
-            return "heat_stress"
-        if bucket == "weather_heavy_rain":
-            return "flood_stress"
-        if bucket in ["weather_cool_humid"]:
-            return "fungal_risk"
-        return "no_stress"
+    # # WEATHER STRESS LABEL
+    # def _infer_weather_stress(self, bucket: str) -> str:
+    #     if bucket in ["weather_hot_dry", "weather_arid"]:
+    #         return "heat_stress"
+    #     if bucket == "weather_heavy_rain":
+    #         return "flood_stress"
+    #     if bucket in ["weather_cool_humid"]:
+    #         return "fungal_risk"
+    #     return "no_stress"

@@ -6,4 +6,5 @@ pandas
 pyarrow
 pymongo
 dotenv
-google.generativeai
+google.genai
+pathlib

@@ -1,88 +1,193 @@
 import os
-import re
+import time
 import json
+import threading
+import concurrent.futures
 from pathlib import Path
 from typing import Dict, Any, List
+from tqdm import tqdm 
 
 from agri_data_gen.core.prompt.prompt_builder import PromptBuilder
 from agri_data_gen.core.providers.gemini_provider import GeminiProvider
 
 
+class RateLimiter:
+    """
+    Manages API rate limits (RPM) locally to prevent 429 errors.
+    """
+    def __init__(self, max_calls_per_minute: int = 15):
+        self.delay = 60.0 / max_calls_per_minute
+        self.last_call = 0.0
+        self.lock = threading.Lock()
+
+    def wait(self):
+        with self.lock:
+            now = time.time()
+            elapsed = now - self.last_call
+            if elapsed < self.delay:
+                time.sleep(self.delay - elapsed)
+            self.last_call = time.time()
+
 class GenerationEngine:
     """
-    Generates Hindi agronomic reasoning data from bundles.
-    Each bundle -> one JSONL output record.
+    Optimized Engine for JSONL Bundles.
+    Features: Parallel Processing, Rate Limiting, Crash Recovery.
     """
 
     def __init__(self, 
-                 bundle_dir: str = "data/bundles",
-                 out_file: str = "data/generated/data.jsonl"):
-        self.bundle_dir = Path(bundle_dir)
+                 bundle_file: str = "data/bundles/bundles.jsonl",
+                 out_file: str = "data/generated/data.jsonl",
+                 max_workers: int = 4,  # Adjust based on API tier
+                 rpm_limit: int = 15):  
+        
+        self.bundle_file = Path(bundle_file)
         self.out_file = Path(out_file)
         self.provider = GeminiProvider()
-
+        self.max_workers = max_workers
+        
+        # Ensure output directory exists
         self.out_file.parent.mkdir(parents=True, exist_ok=True)
+        
+        # Thread-safe writing
+        self.file_lock = threading.Lock()
+        
+        # Rate Limiter
+        self.limiter = RateLimiter(max_calls_per_minute=rpm_limit)
 
-    def _load_bundles(self) -> List[Path]:
-        if not self.bundle_dir.exists():
-            raise FileNotFoundError(f"Bundle directory not found: {self.bundle_dir}")
-
-        return sorted(self.bundle_dir.glob("*.json"))
-
-    def _validate_json(self, text: str) -> Dict[str, Any]:
+    def _load_processed_ids(self) -> set:
         """
-        Attempts to fix common JSON issues from LLM output.
+        Reads the output file to check which IDs are already done.
+        Allows resuming if the script stops.
         """
-        # Remove markdown blocks
-        # text = re.sub(r"```.*?```", "", text, flags=re.S)
+        processed_ids = set()
+        if self.out_file.exists():
+            with open(self.out_file, 'r', encoding='utf-8') as f:
+                for line in f:
+                    try:
+                        record = json.loads(line)
+                        # Assuming the input bundle has a 'bundle_id' or we use index
+                        if "bundle_id" in record:
+                            processed_ids.add(record["bundle_id"])
+                        elif "id" in record:
+                            processed_ids.add(record["id"])
+                    except json.JSONDecodeError:
+                        continue
+        return processed_ids
 
-        # Extract first JSON object
-        start = text.find("{")
-        end = text.rfind("}") +1
-        if start == -1 or end == 0:
-            print("test: ", text)
-            raise ValueError("No JSON object found in output")
+    def _process_single_bundle(self, line: str, line_idx: int):
+        """
+        Worker function to process one line of JSONL.
+        """
+        try:
+            bundle = json.loads(line)
+            bundle_id = bundle.get("bundle_id", f"row_{line_idx}")
 
-        json_text = text[start:end]
+            # Input Construction
+            input_context = bundle # Pass everything (Crop, Weather, etc.)
+            
+            # Prompt Building
+            prompt = PromptBuilder.build(
+                json.dumps(input_context, ensure_ascii=False, indent=2), 
+                bundle_id
+            )
 
-        # Remove trailing commas before } or ]
-        # json_text = re.sub(r",\s*([}\]])", r"\1", json_text)
+            # Rate Limiting 
+            self.limiter.wait()
 
-        return json.loads(json_text)
+            # API Call with Retry Logic
+            response = self._call_provider_with_retry(prompt)
+
+            # Result Construction
+            combined_record = {
+                "id": line_idx,
+                "bundle_id": bundle_id,
+                "input": input_context,
+                "output": response 
+            }
+
+            # Thread-Safe Write
+            with self.file_lock:
+                with open(self.out_file, "a", encoding="utf-8") as f_out:
+                    f_out.write(json.dumps(combined_record, ensure_ascii=False) + "\n")
+            
+            return True
+
+        except Exception as e:
+            print(f"Error processing row {line_idx}: {e}")
+            return False
+
+
+    def _call_provider_with_retry(self, prompt, retries=3):
+        """
+        Handles 429 (Rate Limit) and 500 errors with exponential backoff.
+        """
+        base_delay = 2
+        for attempt in range(retries):
+            try:
+                # Assuming provider.generate returns the string text
+                return self.provider.generate(prompt)
+            except Exception as e:
+                error_msg = str(e).lower()
+                # Check for rate limit or server errors
+                if "429" in error_msg or "quota" in error_msg or "500" in error_msg:
+                    wait_time = base_delay * (2 ** attempt)
+                    print(f"API Limit hit. Retrying in {wait_time}s...")
+                    time.sleep(wait_time)
+                else:
+                    raise e # Raise other errors immediately
+        raise Exception("Max retries exceeded")
+
 
     def generate_all(self, limit: int = None):
-        bundles = self._load_bundles()
+        """
+        Main execution loop using ThreadPool.
+        """
+        print(f"Starting Generation Engine")
+
+        # Load existing work to skip
+        processed_ids = self._load_processed_ids()
+        print(f"Found {len(processed_ids)} already processed records. Skipping them.")
+
+        # Read all lines 
+        with open(self.bundle_file, 'r', encoding='utf-8') as f:
+            lines = f.readlines()
+
         if limit:
-            bundles = bundles[:limit]
+            lines = lines[:limit]
 
-        print(f"Found {len(bundles)} bundles.")
+        # Filter out already done
+        work_items = []
+        for idx, line in enumerate(lines, start=1):
+            # Quick check if we can parse ID to skip
+            try:
+                b_id = json.loads(line).get("bundle_id", f"row_{idx}")
+                if b_id not in processed_ids:
+                    work_items.append((line, idx))
+            except:
+                continue
 
-        with self.out_file.open("w", encoding="utf-8") as f_out:
-            for idx, bundle_path in enumerate(bundles, start=1):
+        print(f"⚡ Processing {len(work_items)} items with {self.max_workers} threads...")
 
-                bundle = json.loads(bundle_path.read_text())
-                
-                crop = bundle["crop"]
-                weather = bundle["weather"]
+        # Parallel Execution
+        with concurrent.futures.ThreadPoolExecutor(max_workers=self.max_workers) as executor:
+            # Submit all tasks
+            futures = [
+                executor.submit(self._process_single_bundle, item[0], item[1]) 
+                for item in work_items
+            ]
+            
+            # Progress Bar
+            for _ in tqdm(concurrent.futures.as_completed(futures), total=len(futures), unit="req"):
+                pass
 
-                # Insert structured attributes into JSON snippet for final template
-                input_context = {
-                        "crop": crop,
-                        "weather": weather
-                    }
-                prompt = PromptBuilder.build( json.dumps(input_context, ensure_ascii=False, indent=2 ), idx)
+        print(f"\nGeneration complete. Data saved to {self.out_file}")
 
-                print(f"Generating record {idx} for {bundle_path.name} ...")
-                response = self.provider.generate(prompt)
-                print("response: ", response)
-                record = self._validate_json(response)
 
-                combined_record = {
-                    "id": idx,
-                    "input": input_context,
-                    "output": record
-                }
 
-                f_out.write(json.dumps(combined_record, ensure_ascii=False, indent=2) + "\n")
-
-        print(f"\nGeneration complete. Output saved to {self.out_file}")
+if __name__ == "__main__":
+    engine = GenerationEngine(
+        bundle_file="data/bundles/all_scenarios.jsonl",
+        rpm_limit=15, 
+        max_workers=4
+    )
+    engine.generate_all()
