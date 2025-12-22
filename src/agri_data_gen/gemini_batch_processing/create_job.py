@@ -19,35 +19,6 @@ class TextBatchJob:
         os.makedirs(self.output_dir, exist_ok=True)
         self.jsonl_path = f"{self.output_dir}/batch_requests.jsonl"
 
-    # def prepare_prompt(self, data_bundle):
-    #     """
-    #     Takes the entire dictionary, converts it to a formatted JSON string,
-    #     and wraps it in a strict instruction block.
-    #     """
-    #     # Convert the dictionary to a pretty-printed JSON string
-    #     data_json = json.dumps(data_bundle, indent=2, ensure_ascii=False)
-        
-    #     prompt = f"""
-    #     Role: Expert Agricultural Advisor for Indian farmers.
-    #     Language: Hindi (Strictly).
-        
-    #     Input Data (JSON):
-    #     ```json
-    #     {data_json}
-    #     ```
-        
-    #     Task:
-    #     You are provided with a data bundle containing details about a specific crop scenario (Crop, Weather, Soil, Pest, Disease, Stage, etc.). 
-    #     1. Analyze all the provided parameters in the JSON "Input Data" and fill if missing or "None". 
-    #     2. Generate a practical, actionable advisory for the farmer based *only* on these specific conditions.
-    #     3. If specific values (like temperature or rainfall) are provided, reference them in your reasoning.
-        
-    #     Constraints:
-    #     - The output must be purely the advisory text in Hindi.
-    #     - Tone: Respectful, clear, and authoritative (kisan mitra).
-    #     """
-    #     return prompt
-
 
     def prepare_prompt(self, data_bundle):
         """
