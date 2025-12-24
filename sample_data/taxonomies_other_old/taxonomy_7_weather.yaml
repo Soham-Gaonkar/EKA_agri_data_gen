@@ -6,7 +6,7 @@ attributes:
   - max_temperature_c
   - rainfall_mm
   - humidity_percent
-  - wind_speed_kph
+  - wind_speed_kph 
   - weather_stress_flag  
 
 entries:
@@ -14,7 +14,7 @@ entries:
     label: "Hot and Dry Weather"
 
   - id: weather_hot_humid
-    label: "Hot and Humid Weather"
+    label: "Hot and Humid Weather" 
 
   - id: weather_cool_dry
     label: "Cool and Dry Weather"

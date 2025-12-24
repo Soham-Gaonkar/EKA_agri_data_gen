@@ -9,6 +9,10 @@ attributes:
   - yield_reference          
 
 entries:
+
+  - id: crop_jute
+    label: "Jute (जूट)"
+    
   - id: crop_rice
     label: "Rice (धान)"
 
@@ -30,8 +34,6 @@ entries:
   - id: crop_pomegranate
     label: "Pomegranate (अनार)"
 
-  - id: crop_jute
-    label: "Jute (जूट)"
 
   - id: crop_orange
     label: "Orange (संतरा)"

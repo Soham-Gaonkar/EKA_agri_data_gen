@@ -1,0 +1,19 @@
+group: variety
+description: "Major Varieties"
+attributes:
+  - crop_type_reference
+  - duration_maturity_days
+  - disease_resistance_traits
+  - yield_potential_category
+
+entries:
+  - id: var_gw496
+    label: "GW-496 (Wheat)"
+  - id: var_pusa1121
+    label: "Pusa Basmati 1121 (Rice)"
+  - id: var_bollgard2
+    label: "Bollgard II (Cotton)"
+  - id: var_pusa_bold
+    label: "Pusa Bold (Mustard)"
+  - id: var_co0238
+    label: "Co-0238 (Sugarcane)"

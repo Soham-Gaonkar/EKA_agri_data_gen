@@ -1,0 +1,13 @@
+group: yield_potential
+description: "Yield Categories"
+attributes:
+  - expected_yield_range_quintals
+  - input_requirement_level
+
+entries:
+  - id: yield_high
+    label: "High Yield Potential"
+  - id: yield_avg
+    label: "Average Yield Potential"
+  - id: yield_low
+    label: "Low Yield Potential"

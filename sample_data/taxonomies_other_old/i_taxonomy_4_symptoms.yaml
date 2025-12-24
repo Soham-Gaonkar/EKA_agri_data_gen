@@ -3,7 +3,6 @@ description: "Observed plant/crop health symptoms. Attributes are descriptors us
 
 attributes:
   - symptom_code
-  - symptom_label_hi
   - symptom_description
   - typical_onset_days
   - typical_location_on_plant   # lower_leaves, upper_leaves, whole_plant

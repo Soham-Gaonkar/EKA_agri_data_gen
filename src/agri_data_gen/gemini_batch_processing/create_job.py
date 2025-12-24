@@ -4,14 +4,17 @@ import os
 import logging
 from google import genai
 from google.genai import types
+from dotenv import load_dotenv
 
+
+load_dotenv()
 # Setup simple logging
 logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(levelname)s - %(message)s')
 logger = logging.getLogger(__name__)
 
 class TextBatchJob:
     def __init__(self, job_name="agri-advisory-job"):
-        self.api_key = os.environ['GEMINI_API_KEY_2'] 
+        self.api_key = os.getenv('GOOGLE_API_KEY_2')
         self.client = genai.Client(api_key=self.api_key)  
         self.job_name = job_name
         self.job_id = f"{job_name}_{int(time.time())}"
@@ -29,41 +32,52 @@ class TextBatchJob:
         data_json = json.dumps(data_bundle, indent=2, ensure_ascii=False)
         
         prompt = f"""
-        Role: Expert Agricultural Advisor for Indian farmers (Kisan Mitra).
-        Language: Hindi (Strictly).
-        
-        Input Data (JSON):
-        ```json
-        {data_json}
-        ```
-        
-        Task:
-        You are provided with a data bundle describing a specific agricultural scenario.
-        
-        Step 1: **Feasibility Analysis (Crucial)**
-        Compare the 'Crop' requirements (Temperature, Rainfall, etc.) against the provided 'Weather' conditions and all other constraints.
-        
-        Step 2: **Generate Advisory**
-        Based on Step 1, generate the advisory in Hindi:
-        - **If the scenario is IMPOSSIBLE/FATAL**: 
-          * Clearly state that farming this crop is NOT recommended.
-          * Explain *why* clearly.
-          * Do NOT give false hope or generic fertilizer tips for a dying crop.
-        - **If the scenario is STRESSFUL but SALVAGEABLE**: 
-          * Acknowledge the stress (e.g., "Drought stress", etc).
-          * Provide specific mitigation steps.
-        - **If the scenario is IDEAL**: 
-          * Focus on yield maximization and standard care.
+            Role: Expert Agricultural Advisor (Kisan Mitra).
+            Language: Hindi (Strictly).
+            
+            Input Data (JSON):
+            ```json
+            {data_json}
+            ```
+            
+            Task:
+            You are provided with a data bundle describing a specific agricultural scenario.
+            
+            Step 1: Feasibility Analysis (Crucial)
+            Compare the 'Crop' requirements (Temperature, Rainfall, etc.) against the provided 'Weather' conditions and various other constraints.
+            
+            Step 2: Generate Advisory
+            Based on Step 1, generate the advisory in Hindi. 
+            
+            **Your advisory MUST cover the following Actionable Areas (where applicable):**
+            1. **Feasibility:** Can this crop actually be grown here?
+            2. **Disease Prevention:** Specific preventive measures for likely pests/diseases.
+            3. **Soil Management:** Advice on fertilizers, nutrients, or land preparation.
+            4. **Water Management:** Irrigation advice (saving water or critical stages).
+            5. **Risk Handling:** How to handle weather uncertainty or risks.
+            6. **Economic/Operational:** Practical tips on costs or operations.
 
-        Constraints:
-        - Output strictly in **valid JSON** with a single key: "advisory_hindi".
-        - Use simple, clear Hindi suitable for farmers. Use bullet points for steps.
-        - Reference specific numbers from the input (e.g., "Since rainfall is 0mm...", etc).
+            **Condition Logic:**
+            - If the scenario is IMPOSSIBLE/FATAL (e.g., Wrong Crop Classification): 
+            * Focus ONLY on the "Feasibility" aspect.
+            * Clearly state that farming this crop is NOT recommended and explain *why*.
+            * Do NOT generate advice for soil/water/disease (it is irrelevant for a failed crop).
+            - If the scenario is STRESSFUL but SALVAGEABLE: 
+            * Acknowledge the stress (e.g., "Drought").
+            * Provide specific mitigation steps across the actionable areas above.
+            - If the scenario is IDEAL: 
+            * Focus on yield maximization across all actionable areas.
+
+            Constraints:
+            - Output strictly in hindi properly. Give proper hindi words instead of just converting english to hindi.
+            - The value should be a single coherent Hindi text (formatted with bullet points).
+            - Use simple, clear Hindi suitable for farmers. 
+            - Reference specific numbers from the input.
         """
         return prompt
 
 
-    def create_jsonl(self, input_file_path):
+    def create_jsonl(self, input_file_path: str= "data/bundles/bundles.jsonl"):
         """
         Reads input bundles from a JSONL file line-by-line and writes 
         formatted Batch API requests to the output JSONL file.
@@ -80,27 +94,27 @@ class TextBatchJob:
             for index, line in enumerate(infile):
                 try:
                     bundle = json.loads(line.strip())
-                    # Create Custom ID
                     custom_id = bundle.get('bundle_id', f"req_{index}")
                     # Generate Prompt
                     prompt_text = self.prepare_prompt(bundle)
-                    # Construct Request Object
+                    # Construct Request Object 
                     request_entry = {
-                        "custom_id": custom_id,
-                        "method": "POST",
-                        "url": "/v1beta/models/gemini-2.5-flash:generateContent", 
-                        "body": {
+                        "icustom_idd": custom_id, # Batch API response file lines map back to input via custom_id
+                        "method": "POST", 
+                        "url": "/v1beta/models/gemini-2.5-flash:generateContent",
+                        "body": { 
                             "contents": [{"parts": [{"text": prompt_text}]}],
                             "generationConfig": {
                                 "responseMimeType": "application/json", 
                                 "temperature": 0.2,
-                                "thinkingConfig": {
-                                    "includeThoughts": True 
+                                "thinkingConfig": { 
+                                    "includeThoughts": True,
+                                    "thinkingBudget": 1024
                                 }
                             }
                         }
                     }
-                    
+
                     #write to batch file
                     outfile.write(json.dumps(request_entry) + "\n")
                     request_count += 1
@@ -117,7 +131,7 @@ class TextBatchJob:
         logger.info("Uploading JSONL file to Gemini...")
         batch_input_file = self.client.files.upload(
             file=self.jsonl_path,
-            config=types.UploadFileConfig(mime_type="text/plain") 
+            config=types.UploadFileConfig(display_name="my-batch-requests", mime_type="text/plain") 
         )
         
         logger.info(f"File uploaded: {batch_input_file.name}. Starting Batch Job...")
@@ -125,7 +139,9 @@ class TextBatchJob:
         self.batch_job = self.client.batches.create( 
             model="models/gemini-2.5-flash",
             src=batch_input_file.name,
-            config=types.BatchJobConfig(display_name=self.job_id)
+            config={
+                'display_name': self.job_id,
+            },
         )
         
         logger.info(f"Batch Job Created: {self.batch_job.name}")
@@ -165,10 +181,11 @@ class TextBatchJob:
             f.write(content)
             
         # Parse and Separate Files
-        # self._parse_raw_results(raw_path)
+        # self.parse_raw_results(raw_path)
+        return raw_path
 
 
-    # def _parse_raw_results(self, raw_path):
+    # def parse_raw_results(self, raw_path):
     #     logger.info("Parsing results...")
     #     with open(raw_path, 'r', encoding='utf-8') as f:
     #         for line in f:
@@ -176,18 +193,38 @@ class TextBatchJob:
     #                 response_item = json.loads(line)
     #                 custom_id = response_item.get("custom_id", "unknown_id")
                     
-    #                 # Extract the actual model generation
-    #                 # Note: structure differs slightly based on success/error
     #                 if "response" in response_item:
-    #                     model_output = response_item["response"]["candidates"][0]["content"]["parts"][0]["text"]
+    #                     candidates = response_item["response"].get("candidates", [])
+    #                     if not candidates: continue
+
+    #                     parts = candidates[0]["content"]["parts"]
+    #                     thinking_text = ""
+    #                     advisory_text = ""
+
+    #                     # Extract Thought vs Answer
+    #                     for part in parts:
+    #                         if part.get("thought") is True:
+    #                             thinking_text += part.get("text", "")
+    #                         else:
+    #                             advisory_text += part.get("text", "")
+
+    #                     # Clean up Advisory JSON
+    #                     try:
+    #                         final_advisory = json.loads(advisory_text)
+    #                     except:
+    #                         final_advisory = {"raw_text": advisory_text}
+
+    #                     # Save Final Clean File
+    #                     final_output = {
+    #                         "id": custom_id,
+    #                         "thinking": thinking_text,
+    #                         "advisory": final_advisory
+    #                     }
                         
-    #                     # Save individual file
-    #                     output_filename = f"{self.output_dir}/{custom_id}.json"
-    #                     with open(output_filename, "w", encoding="utf-8") as out_f:
-    #                         out_f.write(model_output)
-    #                 else:
-    #                     logger.warning(f"Item {custom_id} failed: {response_item}")
-                        
+    #                     out_file = f"{self.output_dir}/{custom_id}.json"
+    #                     with open(out_file, "w", encoding="utf-8") as out:
+    #                         json.dump(final_output, out, indent=2, ensure_ascii=False)
+                            
     #             except Exception as e:
     #                 logger.error(f"Error parsing line: {e}")
 
@@ -200,6 +237,9 @@ if __name__ == "__main__":
     
     processor.submit_job()
     
-    # processor.wait_for_completion()
+    processor.wait_for_completion()
     
-    # processor.download_and_parse_results()
+    raw_path = processor.download_and_parse_results()
+    print("Saved raw result at: ", raw_path)
+
+

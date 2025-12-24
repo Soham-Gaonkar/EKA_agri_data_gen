@@ -1,0 +1,20 @@
+group: region
+description: "Target Regions"
+
+attributes:
+  - agro_climatic_zone
+  - soil_type_major
+  - annual_rainfall_range
+  - dominant_cropping_system
+
+entries:
+  - id: reg_gujarat
+    label: "Gujarat"
+  - id: reg_punjab
+    label: "Punjab"
+  - id: reg_haryana
+    label: "Haryana"
+  - id: reg_up
+    label: "Uttar Pradesh"
+  - id: reg_mp
+    label: "Madhya Pradesh"

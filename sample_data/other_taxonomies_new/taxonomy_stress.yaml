@@ -1,0 +1,22 @@
+group: stress
+description: "Biotic and Abiotic Stresses"
+
+attributes:
+  - stress_category_biotic_abiotic
+  - causal_organism_or_factor
+  - trigger_weather_conditions
+  - management_intervention
+
+entries:
+  - id: stress_rust
+    label: "Yellow/Brown Rust"
+  - id: stress_bollworm
+    label: "Pink Bollworm"
+  - id: stress_aphid
+    label: "Aphids (Sucking Pest)"
+  - id: stress_drought
+    label: "Drought/Moisture Stress"
+  - id: stress_salinity
+    label: "Soil Salinity"
+  - id: stress_none
+    label: "No Major Stress (Healthy)"

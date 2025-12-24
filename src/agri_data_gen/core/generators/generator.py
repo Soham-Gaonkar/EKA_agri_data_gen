@@ -15,7 +15,7 @@ class RateLimiter:
     """
     Manages API rate limits (RPM) locally to prevent 429 errors.
     """
-    def __init__(self, max_calls_per_minute: int = 15):
+    def __init__(self, max_calls_per_minute: int = 10):
         self.delay = 60.0 / max_calls_per_minute
         self.last_call = 0.0
         self.lock = threading.Lock()
@@ -37,8 +37,8 @@ class GenerationEngine:
     def __init__(self, 
                  bundle_file: str = "data/bundles/bundles.jsonl",
                  out_file: str = "data/generated/data.jsonl",
-                 max_workers: int = 4,  # Adjust based on API tier
-                 rpm_limit: int = 15):  
+                 max_workers: int = 1,  # Adjust based on API tier
+                 rpm_limit: int = 10):  
         
         self.bundle_file = Path(bundle_file)
         self.out_file = Path(out_file)
@@ -53,6 +53,7 @@ class GenerationEngine:
         
         # Rate Limiter
         self.limiter = RateLimiter(max_calls_per_minute=rpm_limit)
+        print(f"Output will be saved to: {self.out_file.absolute()}")
 
     def _load_processed_ids(self) -> set:
         """
@@ -68,8 +69,8 @@ class GenerationEngine:
                         # Assuming the input bundle has a 'bundle_id' or we use index
                         if "bundle_id" in record:
                             processed_ids.add(record["bundle_id"])
-                        elif "id" in record:
-                            processed_ids.add(record["id"])
+                        # elif "id" in record:
+                        #     processed_ids.add(record["id"])
                     except json.JSONDecodeError:
                         continue
         return processed_ids
@@ -80,6 +81,7 @@ class GenerationEngine:
         """
         try:
             bundle = json.loads(line)
+            #  This ID determines resume capability. 
             bundle_id = bundle.get("bundle_id", f"row_{line_idx}")
 
             # Input Construction
@@ -100,16 +102,18 @@ class GenerationEngine:
             # Result Construction
             combined_record = {
                 "id": line_idx,
-                "bundle_id": bundle_id,
-                "input": input_context,
+                # "bundle_id": bundle_id,
+                # "input": input_context,
                 "output": response 
             }
 
-            # Thread-Safe Write
+            # Thread-Safe Write with FLUSH
             with self.file_lock:
                 with open(self.out_file, "a", encoding="utf-8") as f_out:
                     f_out.write(json.dumps(combined_record, ensure_ascii=False) + "\n")
-            
+                    f_out.flush() 
+                    os.fsync(f_out.fileno())
+
             return True
 
         except Exception as e:
@@ -121,7 +125,7 @@ class GenerationEngine:
         """
         Handles 429 (Rate Limit) and 500 errors with exponential backoff.
         """
-        base_delay = 2
+        base_delay = 10
         for attempt in range(retries):
             try:
                 # Assuming provider.generate returns the string text
@@ -133,6 +137,9 @@ class GenerationEngine:
                     wait_time = base_delay * (2 ** attempt)
                     print(f"API Limit hit. Retrying in {wait_time}s...")
                     time.sleep(wait_time)
+                elif "500" in error_msg or "internal" in error_msg:
+                    print(f"⚠️ Server Error (500). Retrying...")
+                    time.sleep(2)
                 else:
                     raise e # Raise other errors immediately
         raise Exception("Max retries exceeded")
@@ -165,10 +172,12 @@ class GenerationEngine:
                     work_items.append((line, idx))
             except:
                 continue
-
-        print(f"⚡ Processing {len(work_items)} items with {self.max_workers} threads...")
-
-        # Parallel Execution
+        
+        if not work_items:
+            print("All items already processed!")
+            return
+        
+        #  Execution - for parallel increase executors.
         with concurrent.futures.ThreadPoolExecutor(max_workers=self.max_workers) as executor:
             # Submit all tasks
             futures = [
@@ -184,10 +193,17 @@ class GenerationEngine:
 
 
 
+
+
 if __name__ == "__main__":
     engine = GenerationEngine(
         bundle_file="data/bundles/all_scenarios.jsonl",
-        rpm_limit=15, 
-        max_workers=4
+        rpm_limit=13, 
+        max_workers=1
     )
     engine.generate_all()
+
+
+
+
+
