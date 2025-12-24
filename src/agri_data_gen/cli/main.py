@@ -93,10 +93,10 @@ def pipeline_run(
     print("Starting end-to-end pipeline...")
 
     # Build bundles
-    # print("Building bundles...")
-    # bundle_builder = BundleBuilder(out_dir=bundle_dir)
-    # bundle_builder.load_all()
-    # generated_bundles_path = bundle_builder.build_all(filename= bundle_filename)
+    print("Building bundles...")
+    bundle_builder = BundleBuilder(out_dir=bundle_dir)
+    bundle_builder.load_all()
+    generated_bundles_path = bundle_builder.build_all(filename= bundle_filename)
 
     # Generate data from bundles
     print("Generating reasoning data...")
