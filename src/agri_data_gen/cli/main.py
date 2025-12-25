@@ -100,15 +100,15 @@ def pipeline_run(
 
     # Generate data from bundles
     print("Generating reasoning data...")
-    generated_bundles_path = Path(bundle_dir) / bundle_filename
-    output_file = Path(output_dir)/output_filename
-    engine = GenerationEngine(
-            bundle_file=generated_bundles_path, 
-            out_file=output_file,        
-            rpm_limit=4, 
-            max_workers=1
-        )
-    engine.generate_all(limit=limit)
+    # generated_bundles_path = Path(bundle_dir) / bundle_filename
+    # output_file = Path(output_dir)/output_filename
+    # engine = GenerationEngine(
+    #         bundle_file=generated_bundles_path, 
+    #         out_file=output_file,        
+    #         rpm_limit=4, 
+    #         max_workers=1
+    #     )
+    # engine.generate_all(limit=limit)
 
     print("Pipeline completed successfully.")
 

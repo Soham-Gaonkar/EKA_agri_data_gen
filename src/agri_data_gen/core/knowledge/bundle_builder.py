@@ -21,11 +21,12 @@ class BundleBuilder:
         self.ORDER = [
             "region",
             "crop",
-            "classification",
+            "growth_stage",
+            "weather",
+            "stress",
+            # "classification",
             # "variety",
-            # "stress",
             # "yield_potential",
-            # "growth_stage"
         ]
         
         # We will initialize adapters in load_all() once we have the schema
@@ -90,6 +91,7 @@ class BundleBuilder:
         with open(output_path, 'w', encoding='utf-8') as f:
             for combination in itertools.product(*axes_data):
                 bundle = {}
+                bundle["id"] = count+1
                 id_parts = []
 
                 for group_name, entry_id, real_data in combination:
@@ -100,7 +102,7 @@ class BundleBuilder:
                     id_parts.append(entry_id)
 
                 # Create ID
-                bundle["bundle_id"] = "__".join(id_parts)
+                # bundle["bundle_id"] = "__".join(id_parts)
 
                 f.write(json.dumps(bundle, ensure_ascii=False) + "\n")
                 count += 1
