@@ -17,17 +17,13 @@ class BundleBuilder:
         self.out_dir.mkdir(parents=True, exist_ok=True)
         self.taxonomy_manager = TaxonomyManager()
         
-        # 1. Define the Strict Order
-        self.ORDER = [
+        # mix freely with everything
+        self.INDEPENDENT_AXES = [
             "region",
-            "crop",
             "growth_stage",
             "weather",
-            "stress",
-            # "classification",
-            # "variety",
-            # "yield_potential",
         ]
+        self.DEPENDENT_GROUPS = ["crop"]
         
         # We will initialize adapters in load_all() once we have the schema
         self.adapters = {}
@@ -37,12 +33,13 @@ class BundleBuilder:
         Load datasets and taxonomy definitions.
         Then, initialize adapters with the correct schema attributes.
         """
-        # 1. Load Taxonomies first
+        # Load Taxonomies 
         self.taxonomies = self.taxonomy_manager.get_active_taxonomies()
+        all_groups = self.INDEPENDENT_AXES + self.DEPENDENT_GROUPS
         
-        # 2. Initialize Adapters dynamically based on loaded schemas
+        # Initialize Adapters dynamically based on loaded schemas
         print("Initializing adapters with schemas...")
-        for group in self.ORDER:
+        for group in all_groups:
             # Find the taxonomy definition to get its attributes
             tax_def = next((t for t in self.taxonomies if t["group"] == group), None)
             
@@ -58,9 +55,10 @@ class BundleBuilder:
         print(f"Building ordered bundles into: {output_path} ...")
 
         # 1. Collect Data for each Axis in strict order
-        axes_data = []
-        
-        for group_name in self.ORDER:
+        # axes_data = []
+        independent_axes_data = []
+
+        for group_name in self.INDEPENDENT_AXES:
             tax_def = next((t for t in self.taxonomies if t["group"] == group_name), None)
             
             if not tax_def:
@@ -72,40 +70,78 @@ class BundleBuilder:
             
             current_axis_values = []
             for entry in entries:
-                entry_id = entry["id"]
-                
-                # FIX 2: Pass the FULL entry object, not just ID
                 if adapter:
-                    # Returns {'data': {...}, 'schema_attributes': [...]}
-                    real_data = adapter.sample(entry) 
+                    real_data = adapter.sample(entry).get("data", entry)
                 else:
-                    real_data = {"data": entry} # Fallback structure
-                
-                current_axis_values.append((group_name, entry_id, real_data))
+                    real_data = entry
+                current_axis_values.append((group_name, real_data))
             
-            if current_axis_values:
-                axes_data.append(current_axis_values)
+            independent_axes_data.append(current_axis_values)
 
         # 2. Generate Combinations
+        crop_def = next((t for t in self.taxonomies if t["group"] == "crop"), None)
+        if not crop_def:
+            raise ValueError("Crop taxonomy missing!")
+        
+        crop_adapter = self.adapters.get("crop")
+        crop_entries = crop_def["entries"]
+
+        # ====================================================
+        # STEP 3: HYBRID GENERATION LOOP
+        # ====================================================
         count = 0
         with open(output_path, 'w', encoding='utf-8') as f:
-            for combination in itertools.product(*axes_data):
-                bundle = {}
-                bundle["id"] = count+1
-                id_parts = []
+            
+            # A. Loop through every combination of Independent Variables
+            # (e.g., MP + Heavy Rain + Flowering)
+            for indep_combo in itertools.product(*independent_axes_data):
+                
+                # Create the base context for this scenario
+                base_bundle = {}
+                for group_name, data in indep_combo:
+                    base_bundle[group_name] = data
 
-                for group_name, entry_id, real_data in combination:
-                    # Unpack the structured data from the adapter
-                    # We store the actual data (id, label, attributes) in the bundle
-                    bundle[group_name] = real_data.get("data", real_data)
+                # B. Loop through Crops
+                for crop_entry in crop_entries:
+                    # Process crop data via adapter
+                    processed_crop = crop_adapter.sample(crop_entry).get("data", crop_entry)
                     
-                    id_parts.append(entry_id)
+                    # Extract the nested problems list
+                    # IMPORTANT: Use .get() to avoid errors if a crop has no problems listed
+                    problems_list = processed_crop.get("problems", [])
 
-                # Create ID
-                # bundle["bundle_id"] = "__".join(id_parts)
+                    if not problems_list:
+                        continue
 
-                f.write(json.dumps(bundle, ensure_ascii=False) + "\n")
-                count += 1
+                    # Clean the crop object for the bundle
+                    # We remove the full 'problems' list so it doesn't clutter the final JSON
+                    crop_payload = processed_crop.copy()
+                    if "problems" in crop_payload:
+                        del crop_payload["problems"]
 
-        print(f"Successfully generated {count} unique scenarios.")
+                    # C. Loop through the Specific Problems for this Crop
+                    for problem in problems_list:
+                        
+                        # Clone the base bundle
+                        final_bundle = base_bundle.copy()
+                        final_bundle["id"] = count + 1
+                        
+                        # Add Crop and Specific Stress
+                        final_bundle["crop"] = crop_payload
+                        final_bundle["stress"] = problem # This contains the specific ID and Label
+                        
+                        # Write to file
+                        f.write(json.dumps(final_bundle, ensure_ascii=False) + "\n")
+                        count += 1
+
+        print(f"Successfully generated {count} valid scenarios.")
         return str(output_path)
+
+
+
+
+
+
+
+
+

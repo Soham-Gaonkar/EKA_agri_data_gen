@@ -1,6 +1,8 @@
 import time
 import json
 import os
+import yaml
+import random
 import logging
 from google import genai
 from google.genai import types
@@ -22,60 +24,48 @@ class TextBatchJob:
         self.output_dir = f"output/{self.job_id}"
         os.makedirs(self.output_dir, exist_ok=True)
         self.jsonl_path = f"{self.output_dir}/batch_requests.jsonl"
-
+        self.sys_instructions = self.load_system_instructions("data/sys_instructions/system_instructions.jsonl")
 
     def prepare_prompt(self, data_bundle):
         """
-        Takes the entire dictionary, converts it to a formatted JSON string,
-        and wraps it in a strict instruction block with Feasibility Logic.
+        Converts the data bundle into a clean, natural language string 
+        suitable for PDF rendering and easier LLM reading.
         """
-        # Convert the dictionary to a pretty-printed JSON string
-        data_json = json.dumps(data_bundle, indent=2, ensure_ascii=False)
+        lines = []
+        for k, v in data_bundle.items():
+            if isinstance(v, dict) and "label" in v:
+                key = k.replace("_", " ").title()
+                value = v["label"]
+                lines.append(f"{key}: {value}")
         
-        prompt = f"""
-            Role: Expert Agricultural Advisor (Kisan Mitra).
-            Language: Hindi (Strictly).
-            
-            Input Data (JSON):
-            ```json
-            {data_json}
-            ```
-            
-            Task:
-            You are provided with a data bundle describing a specific agricultural scenario.
-            
-            Step 1: Feasibility Analysis (Crucial)
-            Compare the 'Crop' requirements (Temperature, Rainfall, etc.) against the provided 'Weather' conditions and various other constraints.
-            
-            Step 2: Generate Advisory
-            Based on Step 1, generate the advisory in Hindi. 
-            
-            **Your advisory MUST cover the following Actionable Areas (where applicable):**
-            1. **Feasibility:** Can this crop actually be grown here?
-            2. **Disease Prevention:** Specific preventive measures for likely pests/diseases.
-            3. **Soil Management:** Advice on fertilizers, nutrients, or land preparation.
-            4. **Water Management:** Irrigation advice (saving water or critical stages).
-            5. **Risk Handling:** How to handle weather uncertainty or risks.
-            6. **Economic/Operational:** Practical tips on costs or operations.
+        return "\n".join(lines)
 
-            **Condition Logic:**
-            - If the scenario is IMPOSSIBLE/FATAL (e.g., Wrong Crop Classification): 
-            * Focus ONLY on the "Feasibility" aspect.
-            * Clearly state that farming this crop is NOT recommended and explain *why*.
-            * Do NOT generate advice for soil/water/disease (it is irrelevant for a failed crop).
-            - If the scenario is STRESSFUL but SALVAGEABLE: 
-            * Acknowledge the stress (e.g., "Drought").
-            * Provide specific mitigation steps across the actionable areas above.
-            - If the scenario is IDEAL: 
-            * Focus on yield maximization across all actionable areas.
 
-            Constraints:
-            - Output strictly in hindi properly. Give proper hindi words instead of just converting english to hindi.
-            - The value should be a single coherent Hindi text (formatted with bullet points).
-            - Use simple, clear Hindi suitable for farmers. 
-            - Reference specific numbers from the input.
-        """
-        return prompt
+    def load_system_instructions(self, filepath):
+        """Loads all system instruction objects from the JSONL file into a list."""
+        instructions = []
+        if not os.path.exists(filepath):
+            logger.error(f"System instruction file not found: {filepath}")
+            raise FileNotFoundError(f"{filepath} not found.")
+            
+        with open(filepath, 'r', encoding='utf-8') as f:
+            for line in f:
+                if line.strip():
+                    instructions.append(json.loads(line))
+        logger.info(f"Loaded {len(instructions)} system instructions.")
+        return instructions
+
+    def get_random_system_instruction(self):
+        """Picks one random instruction object from the loaded list."""
+        if not self.sys_instructions:
+             raise ValueError("System instructions list is empty!")
+        
+        selected_obj = random.choice(self.sys_instructions)
+        target_lang = "Hindi"
+        final_instruction = selected_obj['system_instruction'].replace("{target_language}", target_lang)
+
+        # Returns just the text content of the instruction
+        return final_instruction
 
 
     def create_jsonl(self, input_file_path: str= "data/bundles/bundles.jsonl"):
@@ -96,26 +86,29 @@ class TextBatchJob:
                 try:
                     bundle = json.loads(line.strip())
                     custom_id = bundle.get('bundle_id', f"req_{index}")
-                    # Generate Prompt
-                    prompt_text = self.prepare_prompt(bundle)
+
+                    prompt_text = json.dumps(self.prepare_prompt(bundle),  ensure_ascii=False) #json dump to parse into string - save token 
+                    sys_instruction_text = self.get_random_system_instruction()
+
                     # Construct Request Object 
                     request_entry = {
                         "custom_id": custom_id, 
                         "request": { 
-                            "contents": [{"parts": [{"text": prompt_text}]}],
+                            "contents": [{"parts": [{"text": prompt_text}]} ],
+                            "system_instruction": { "parts": [{"text": sys_instruction_text}] },
                             "generationConfig": {
                                 "responseMimeType": "application/json", 
                                 "temperature": 0.2,
                                 "thinkingConfig": { 
                                     "includeThoughts": True,
-                                    "thinkingBudget": 1024
-                                }
+                                    "thinkingBudget": 2048
+                                },
                             }
                         }
                     }
 
                     #write to batch file
-                    outfile.write(json.dumps(request_entry) + "\n")
+                    outfile.write(json.dumps(request_entry, ensure_ascii=False) + "\n")
                     request_count += 1
                     
                 except json.JSONDecodeError:
@@ -158,6 +151,7 @@ class TextBatchJob:
                 return job_status
             
             time.sleep(60) 
+            print("waiting for 60")
 
 
     def download_and_parse_results(self):

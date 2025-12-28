@@ -4,6 +4,7 @@ from agri_data_gen.core.data_access.taxonomy_manager import TaxonomyManager
 from agri_data_gen.core.generators.generator import GenerationEngine
 from agri_data_gen.core.knowledge.bundle_builder import BundleBuilder
 from agri_data_gen.gemini_batch_processing.create_job import TextBatchJob
+from agri_data_gen.core.knowledge.sys_instruction_bundle import SystemInstructionBuilder
 
 app = typer.Typer()
 
@@ -40,7 +41,7 @@ def reset_taxonomies():
 
 
 @app.command()
-def batch_run(bundle_file: str = "data/bundles/bundles.jsonl"):
+def batch_run(bundle_file: str = "data/bundles/test_50_samples.jsonl"):
     """
     Submits the generated bundles to Google Batch API.
     """
@@ -57,21 +58,21 @@ def batch_run(bundle_file: str = "data/bundles/bundles.jsonl"):
     job = processor.submit_job()
 
     # Just print the ID and exit
-    print(f"Job Submitted! Job Name: {job.name}")
+    print(f"Job Submi/tted! Job Name: {job.name}")
     print(f"   You can close this terminal now.")
     print(f"   Check status later with: python -m agri_data_gen.cli.main check-batch --job-name {job.name}")
 
-@app.command()
-def check_batch(job_name: str):
-    """
-    Step 2: Checks status and downloads if ready.
-    """
-    print(f"Checking status for: {job_name}")
-    processor = TextBatchJob()
+# @app.command()
+# def check_batch(job_name: str):
+#     """
+#     Step 2: Checks status and downloads if ready.
+#     """
+    print(f"Checking status for: {job.name}")
+    # processor = TextBatchJob()
     # You'll need to update TextBatchJob to accept an existing job_name
-    processor.batch_job = type('obj', (object,), {'name': job_name}) # Mocking the job object with just name
+    # processor.batch_job = type('obj', (object,), {'name': job_name}) # Mocking the job object with just name
     
-    print(f"Checking status for: {job_name}...")
+    print(f"Checking status for: {job.name}...")
     processor.wait_for_completion() # This loops until done
     processor.download_and_parse_results()
 
@@ -97,6 +98,12 @@ def pipeline_run(
     bundle_builder = BundleBuilder(out_dir=bundle_dir)
     bundle_builder.load_all()
     generated_bundles_path = bundle_builder.build_all(filename= bundle_filename)
+    
+    print("Building system instruction bundles...")
+    sys_instruction_builder = SystemInstructionBuilder()
+    sys_instruction_builder.build_instructions()
+
+
 
     # Generate data from bundles
     print("Generating reasoning data...")
@@ -110,7 +117,7 @@ def pipeline_run(
     #     )
     # engine.generate_all(limit=limit)
 
-    print("Pipeline completed successfully.")
+    # print("Pipeline completed successfully.")
 
 
 def main():

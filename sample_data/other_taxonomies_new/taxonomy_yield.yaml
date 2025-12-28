@@ -1,13 +1,12 @@
 group: yield_potential
-description: "Yield Categories"
+description: "उपज श्रेणियाँ"
 attributes:
-  - expected_yield_range_quintals
-  - input_requirement_level
-
+  - अपेक्षित_उपज_रेंज_क्विंटल
+  - इनपुट_आवश्यकता_स्तर
 entries:
   - id: yield_high
-    label: "High Yield Potential"
+    label: "उच्च उपज क्षमता"
   - id: yield_avg
-    label: "Average Yield Potential"
+    label: "औसत उपज क्षमता"
   - id: yield_low
-    label: "Low Yield Potential"
+    label: "कम उपज क्षमता"

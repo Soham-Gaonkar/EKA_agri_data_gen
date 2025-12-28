@@ -1,20 +1,18 @@
 group: region
-description: "Target Regions"
-
+description: "लक्षित क्षेत्र"
 attributes:
-  - agro_climatic_zone
-  - soil_type_major
-  - annual_rainfall_range
-  - dominant_cropping_system
-
+  - कृषि_जलवायु_क्षेत्र
+  - प्रमुख_मृदा_प्रकार
+  - वार्षिक_वर्षा_रेंज
+  - प्रमुख_फसल_प्रणाली
 entries:
   - id: reg_gujarat
-    label: "Gujarat"
+    label: "गुजरात"
   - id: reg_punjab
-    label: "Punjab"
+    label: "पंजाब"
   - id: reg_haryana
-    label: "Haryana"
+    label: "हरियाणा"
   - id: reg_up
-    label: "Uttar Pradesh"
+    label: "उत्तर प्रदेश"
   - id: reg_mp
-    label: "Madhya Pradesh"
+    label: "मध्य प्रदेश"

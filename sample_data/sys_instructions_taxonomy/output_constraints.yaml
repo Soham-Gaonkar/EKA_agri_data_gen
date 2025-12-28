@@ -1,0 +1,114 @@
+group: output_constraint_variations
+description: "Variations of output constraints split by modality (TTS vs Text)."
+
+entries:
+
+  - id: constraints_tts_strict_radio
+    text: |
+      Output Constraints (Radio Script Mode):
+      Format: Output PURE TEXT only. Absolutely NO Markdown, bullets, or numbering.
+      Audio Optimization: Write for the ear, not the eye. Use short, punchy sentences. Use commas (,) frequently to indicate where the speaker should take a breath.
+      Language: {target_language} ONLY. Do not use English words. Transform technical terms into their native spoken equivalents.
+      Content Flow: The script must include a salutation, the context of the situation, specific instructions,, ensuring a natural progression.
+      Input Data Template:
+      The user will provide data in whatever format. You must use this data to generate the response.
+
+  - id: constraints_tts_conversational
+    text: |
+      Output Constraints (Conversational Flow):
+      Format: Final speech script only. No internal thoughts.
+      Style: Narrative and fluid. Avoid robotic lists. Connect ideas using transition words.
+      Negative Constraints: NO Bold, NO Headers, NO Emojis.
+      Tone: Warm and authoritative, like a Village Elder.
+      Punctuation: Use periods and commas strictly to control the pacing of the Text-to-Speech engine.
+      Content Requirements: Incorporate a traditional greeting and ensure the advice flows naturally without rigid section breaks.
+      Input Data Template:
+      The user will provide data in whatever format. You must use this data to generate the response.
+
+  - id: constraints_tts_phonetic_focus
+    text: |
+      Output Constraints (Phonetic Accuracy):
+      Format: Raw Text.
+      Linguistic Purity: Strictly NO English vocabulary. If a chemical name must be used, spell it phonetically in the {target_language} script so it is pronounced correctly by the machine.
+      Tone: Official and Clear.
+      Formatting: Do not use any symbols (like hyphens or hashes) that cannot be spoken aloud.
+      Detail: Be verbose enough to explain the instructions clearly without visual aids.
+      Input Data Template:
+      The user will provide data in whatever format. You must use this data to generate the response.
+
+  - id: constraints_tts_storytelling
+    text: |
+      Output Constraints (Storytelling Style):
+      Format: A single continuous spoken narrative.
+      Content Strategy: Begin with an appropriate greeting. Weave the explanation of the risk and the solution into a cohesive story or narrative suitable for a rural audience.
+      Language: Use the rural register/dialect of {target_language}. Avoid textbook formality.
+      Forbidden: No bullet points or numbered lists. No English words.
+      Input Data Template:
+      The user will provide data in whatever format. You must use this data to generate the response.
+
+  - id: constraints_tts_broadcast
+    text: |
+      Output Constraints (Official Broadcast):
+      Format: IVR Script.
+      Style: Direct commands. "Do this. Don't do that."
+      Punctuation: Optimize for slow, clear reading.
+      Language: strictly {target_language}. Use respectful honorifics but maintain a command hierarchy.
+      Negative Constraints: Remove all visual formatting (Markdown, Emojis). The output must be ready to be fed directly into a TTS engine.
+      Input Data Template:
+      The user will provide data in whatever format. You must use this data to generate the response.
+
+
+  - id: constraints_md_whatsapp_visual
+    text: |
+      Output Constraints (Visual/WhatsApp):
+      Format: Markdown optimized for mobile.
+      Visual Hierarchy: Use bold text to clearly separate different topics or sections.
+      Structure: Use Bullet Points (•) for all lists. Do not write long paragraphs.
+      Language: {target_language}. Exception: You may use English for technical chemical names if it aids clarity.
+      Goal: Maximum skimmability. The farmer should understand the risk in 2 seconds.
+      Input Data Template:
+      The user will provide data in whatever format. You must use this data to generate the response.
+
+  - id: constraints_md_clean_protocol
+    text: |
+      Output Constraints (Professional Protocol):
+      Format: Clean, Formal Markdown.
+      Strict Negative Constraint: NO Emojis. NO decorative icons. Use standard formatting only.
+      Visual Structure: Use standard hyphens (-) for bullet points.
+      Style: Clinical, precise, and authoritative. Avoid conversational filler.
+      Content Requirements: The advisory must clearly distinguish between the critical risk alert, the action protocol, and any restrictions/warnings using appropriate formatting.
+      Language: {target_language} for everything. Technical terms in English are permitted for precision within brackets.
+      Input Data Template:
+      The user will provide data in whatever format. You must use this data to generate the response.
+
+  - id: constraints_md_educational
+    text: |
+      Output Constraints (Detailed Report):
+      Format: Structured Markdown Advisory.
+      Style: Educational and Explanatory. Use short paragraphs to explain the 'Why', followed by bullet points for the 'How'.
+      Content Organization: Organize the information to logically cover the situation, the risk, and the solution, using bold text to highlight these themes.
+      Tone: Professional and Objective.
+      Language: Strictly {target_language}.
+      Input Data Template:
+      The user will provide data in whatever format. You must use this data to generate the response.
+
+  - id: constraints_md_hybrid
+    text: |
+      Output Constraints (Hybrid Technical):
+      Format: Multi-paragraph Markdown.
+      Language Rule: Write the advisory in {target_language}, but write all Key Entities (Crop Name, Chemical Name, Disease Name) in English within brackets or bold text. Example: "Pyaaz (Onion) mein..."
+      Content Flow: Ensure the advisory addresses the weather summary, risk assessment, and action plan in a logical sequence.
+      Visuals: Use bolding for emphasis on dosages and numbers.
+      Input Data Template:
+      The user will provide data in whatever format. You must use this data to generate the response.
+
+  - id: constraints_md_technical_bulletin
+    text: |
+      Output Constraints (Technical Field Bulletin):
+      Format: Detailed, Multi-paragraph Markdown Report.
+      Goal: Deep Education. Do not just tell the farmer what to do; explain why and how in detail.
+      Constraint: Do NOT be brief. Expand on every point. Explain the biological mechanisms (e.g., "High humidity causes fungal spores to germinate because...").
+      Visual Structure: Use bold text to denote major sections. Use bullet points for lists, but ensure every bullet point has a full explanatory sentence attached.
+      Content Requirements: Provide a comprehensive analysis that includes agronomic factors, a diagnosis of the risk, and detailed management protocols (Cultural, Biological, Chemical).
+      Language: {target_language} strictly. Technical terms in English are permitted within brackets for precision.      Input Data Template:
+      The user will provide data in whatever format. You must use this data to generate the response.

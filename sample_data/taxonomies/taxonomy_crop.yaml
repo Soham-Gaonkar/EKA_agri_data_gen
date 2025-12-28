@@ -1,25 +1,108 @@
 group: crop
-description: "Major Crops"
-
+description: "Major crops with their specific pests and diseases."
 attributes:
-  - crop_name
-  - growing_season
-  - pH_preference_range
-  - water_requirement_level
-  - temperature_sensitivity
+  - फसल_का_नाम
+  - उगने_का_मौसम
+  - पीएच_प्राथमिकता_रेंज
+  - जल_आवश्यकता_स्तर
+  - तापमान_संवेदनशीलता
+
 
 entries:
   - id: crop_wheat
-    label: "Wheat (गेहूं)"
+    label: "गेहूं"
+    problems:
+      - id: stress_wheat_yellow_rust
+        label: "पीला रतुआ (Yellow Rust)"
+      - id: stress_wheat_brown_rust
+        label: "भूरा रतुआ (Brown Rust)"
+      - id: stress_wheat_loose_smut
+        label: "अनावृत कंडवा (Loose Smut)"
+      - id: stress_wheat_aphid
+        label: "माहू / चेपा (Wheat Aphids)"
+      - id: stress_wheat_termite
+        label: "दीमक (Termites)"
+
   - id: crop_rice
-    label: "Rice (धान)"
+    label: "धान"
+    problems:
+      - id: stress_rice_blast
+        label: "झोंका रोग / ब्लास्ट (Blast)"
+      - id: stress_rice_blb
+        label: "जीवाणु झुलसा (Bacterial Blight)"
+      - id: stress_rice_stem_borer
+        label: "तना छेदक (Stem Borer)"
+      - id: stress_rice_bph
+        label: "भूरा फुदका (Brown Plant Hopper)"
+      - id: stress_rice_false_smut
+        label: "हल्दी गांठ रोग (False Smut)"
+
   - id: crop_cotton
-    label: "Cotton (कपास)"
+    label: "कपास"
+    problems:
+      - id: stress_cotton_pink_bollworm
+        label: "गुलाबी सुंडी (Pink Bollworm)"
+      - id: stress_cotton_whitefly
+        label: "सफेद मक्खी (Whitefly)"
+      - id: stress_cotton_jassid
+        label: "हरा तेला (Jassids)"
+      - id: stress_cotton_clcuv
+        label: "मरोड़िया रोग (Leaf Curl Virus)"
+      - id: stress_cotton_parawilt
+        label: "उकठा / पैरा-विल्ट (Para-Wilt)"
+
   - id: crop_mustard
-    label: "Mustard (सरसों)"
+    label: "सरसों"
+    problems:
+      - id: stress_mustard_aphid
+        label: "माहू / चेपा (Mustard Aphid)"
+      - id: stress_mustard_white_rust
+        label: "सफेद रतुआ (White Rust)"
+      - id: stress_mustard_alternaria
+        label: "झुलसा रोग (Alternaria Blight)"
+      - id: stress_mustard_painted_bug
+        label: "चितकबरा कीड़ा (Painted Bug)"
+      - id: stress_mustard_stem_rot
+        label: "तना गलन (Stem Rot)"
+
   - id: crop_sugarcane
-    label: "Sugarcane (गन्ना)"
+    label: "गन्ना"
+    problems:
+      - id: stress_sugarcane_red_rot
+        label: "लाल सड़न (Red Rot)"
+      - id: stress_sugarcane_early_shoot_borer
+        label: "कंसुआ (Early Shoot Borer)"
+      - id: stress_sugarcane_pyrilla
+        label: "पायरिला (Pyrilla)"
+      - id: stress_sugarcane_top_borer
+        label: "चोटी भेदक (Top Borer)"
+      - id: stress_sugarcane_whip_smut
+        label: "चाबुक कंडवा (Whip Smut)"
+
   - id: crop_maize
-    label: "Maize (मक्का)"
+    label: "मक्का"
+    problems:
+      - id: stress_maize_faw
+        label: "सैनिक सुंडी (Fall Armyworm)"
+      - id: stress_maize_stem_borer
+        label: "तना छेदक (Stem Borer)"
+      - id: stress_maize_turcicum
+        label: "पत्ती झुलसा (Leaf Blight)"
+      - id: stress_maize_charcoal_rot
+        label: "तना सड़न (Charcoal Rot)"
+      - id: stress_maize_downy_mildew
+        label: "तुलासिता रोग (Downy Mildew)"
+
   - id: crop_groundnut
-    label: "Groundnut (मूंगफली)"
+    label: "मूंगफली"
+    problems:
+      - id: stress_groundnut_tikka
+        label: "टिक्का रोग (Tikka Disease)"
+      - id: stress_groundnut_collar_rot
+        label: "कालर रॉट (Collar Rot)"
+      - id: stress_groundnut_white_grub
+        label: "सफेद लट (White Grub)"
+      - id: stress_groundnut_aphid
+        label: "माहू (Groundnut Aphid)"
+      - id: stress_groundnut_rust
+        label: "रतुआ (Rust)"

@@ -1,22 +1,20 @@
 group: stress
-description: "Biotic and Abiotic Stresses"
-
+description: "जैविक और अजैविक तनाव"
 attributes:
-  - stress_category_biotic_abiotic
-  - causal_organism_or_factor
-  - trigger_weather_conditions
-  - management_intervention
-
+  - तनाव_श्रेणी_जैविक_अजैविक
+  - कारक_जीव_या_तत्व
+  - ट्रिगर_मौसम_की_स्थिति
+  - प्रबंधन_हस्तक्षेप
 entries:
   - id: stress_rust
-    label: "Yellow/Brown Rust"
+    label: "पीला / भूरा रतुआ"
   - id: stress_bollworm
-    label: "Pink Bollworm"
+    label: "गुलाबी सुंडी / बॉलवर्म"
   - id: stress_aphid
-    label: "Aphids (Sucking Pest)"
+    label: "माहू / एफिड्स (रस चूसने वाले कीट)"
   - id: stress_drought
-    label: "Drought/Moisture Stress"
+    label: "सूखा / नमी का तनाव"
   - id: stress_salinity
-    label: "Soil Salinity"
+    label: "मृदा लवणता"
   - id: stress_none
-    label: "No Major Stress (Healthy)"
+    label: "कोई प्रमुख तनाव नहीं (स्वस्थ)"

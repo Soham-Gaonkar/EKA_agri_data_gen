@@ -1,19 +1,17 @@
 group: classification
-description: "Crop Classifications"
-
+description: "फसल वर्गीकरण"
 attributes:
-  - botanical_family
-  - economic_category
-  - root_system_structure
-
+  - वनस्पति_परिवार
+  - आर्थिक_श्रेणी
+  - जड़_प्रणाली_संरचना
 entries:
   - id: class_cereal
-    label: "Cereals"
+    label: "अनाज"
   - id: class_pulse
-    label: "Pulses"
+    label: "दालें / दलहन"
   - id: class_oilseed
-    label: "Oil Seeds"
+    label: "तिलहन"
   - id: class_commercial
-    label: "Commercial/Cash Crops"
+    label: "वाणिज्यिक / नकदी फसलें"
   - id: class_fiber
-    label: "Fiber Crops"
+    label: "रेशेदार फसलें"

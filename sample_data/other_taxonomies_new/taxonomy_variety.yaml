@@ -1,19 +1,21 @@
 group: variety
-description: "Major Varieties"
+description: "प्रमुख किस्में"
 attributes:
-  - crop_type_reference
-  - duration_maturity_days
-  - disease_resistance_traits
-  - yield_potential_category
-
+  - फसल_प्रकार_संदर्भ
+  - परिपक्वता_अवधि_दिनों_में
+  - रोग_प्रतिरोधक_गुण
+  - उपज_क्षमता_श्रेणी
 entries:
   - id: var_gw496
-    label: "GW-496 (Wheat)"
+    label: "GW-496 (गेहूं)"
   - id: var_pusa1121
-    label: "Pusa Basmati 1121 (Rice)"
+    label: "पूसा बासमती 1121 (धान)"
   - id: var_bollgard2
-    label: "Bollgard II (Cotton)"
+    label: "बॉलगार्ड II (कपास)"
   - id: var_pusa_bold
-    label: "Pusa Bold (Mustard)"
+    label: "पूसा बोल्ड (सरसों)"
   - id: var_co0238
-    label: "Co-0238 (Sugarcane)"
+    label: "Co-0238 (गन्ना)"
+
+
+  

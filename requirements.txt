@@ -8,3 +8,4 @@ pymongo
 dotenv
 google.genai
 pathlib
+pyyaml

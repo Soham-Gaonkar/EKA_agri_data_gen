@@ -1,0 +1,17 @@
+group: growth_stage
+description: "विकास के चरण"
+attributes:
+  - चरण_की_अवधि_दिनों_में
+  - प्रमुख_शारीरिक_परिवर्तन
+  - महत्वपूर्ण_पोषक_तत्व_आवश्यकता
+entries:
+  - id: stage_sowing
+    label: "बुवाई / अंकुरण"
+  - id: stage_vegetative
+    label: "वानस्पतिक वृद्धि / कल्ले फूटना"
+  - id: stage_flowering
+    label: "फूल आना / पुष्पन"
+  - id: stage_fruiting
+    label: "दाना भरना / फली बनना"
+  - id: stage_harvest
+    label: "परिपक्वता / कटाई"

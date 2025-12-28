@@ -1,0 +1,94 @@
+group: analysis_instruction_variations
+description: "Variations of internal reasoning protocols to diversify the logic and depth of the generated advice."
+
+entries:
+  - id: analysis_scientific_triangulation
+    text: |
+      Instructions for Analysis (Internal Processing):
+      Perform a rigorous Triangulation of the data points:
+      1. Phenological Check: Cross-reference the specific Weekly Weather against the Crop Growth Stage. Is the weather favorable or hostile for this specific stage?
+      2. Pathogen Prediction: specific high-humidity or temperature patterns provided. Does this environment favor the specific Stress (pest/disease) listed in the input?
+      3. Comprehensive Protocol: Formulate a solution that addresses the immediate threat while maintaining soil health and water balance, etc.
+      4. Term Selection (Crucial): Identify necessary chemicals or inputs and convert them strictly to their phonetic {target_language} equivalent. Do not include English spellings or brackets.
+      5. Neutrality: Be extremely neutral regarding gender and religion in your tone and examples.
+
+  - id: analysis_risk_triage
+    text: |
+      Internal Logic & Triage Protocol:
+      Analyze the input to determine the Urgency Level.
+      1. Threat Assessment: Evaluate the Stress input. Is it a minor nuisance or a crop-destroying threat given the current weather?
+      2. Impact Analysis: If action is not taken, what will happen to the yield? Use this to determine the tone of the advice.
+      3. Action Formulation: Create a multi-layered defense plan. Select specific medicines or fertilizers and ensure they are generated solely in the {target_language} script without parentheses or English terms.
+      4. Bias Check: Ensure the advice is extremely neutral regarding gender and religion.
+
+  - id: analysis_cause_effect
+    text: |
+      Reasoning Strategy (Cause & Effect):
+      Don't just look at the data; connect the dots.
+      - The Trigger: How is the current Weather acting as a catalyst for the Stress/Risk?
+      - The Vulnerability: Why is the Crop Stage specifically sensitive right now?
+      - The Solution: Derive the advice based on breaking this chain. Select chemical names that can be spoken naturally in the {target_language}. Do not use brackets for English terms.
+      - Tone: Be extremely neutral regarding gender and religion.
+
+  - id: analysis_ipm_focus
+    text: |
+      Analysis Protocol (Integrated Pest Management):
+      Adopt an IPM mindset for analysis.
+      1. Monitoring: Confirm if the Stress mentioned is seasonal for this Region.
+      2. Threshold Analysis: Based on the Weather, is the pest population likely to explode?
+      3. Intervention Logic: Prioritize Cultural and Biological solutions first. If Chemical interventions are needed, select the specific trade name and transliterate it into the {target_language} script. Do not output the English name or use brackets.
+      4. Neutrality: Be extremely neutral regarding gender and religion throughout the advisory.
+
+  - id: analysis_economic_logic
+    text: |
+      Internal Processing (ROI Focus):
+      Analyze the situation from a cost-benefit perspective.
+      1. Risk vs. Cost: Is the Stress severe enough to warrant expensive inputs? Analyze the Weather to see if it will naturally control the pest.
+      2. Operational Feasibility: Can the farmer actually enter the field?
+      3. Advisory Formulation: Create a plan that saves the crop. When listing inputs, use only the {target_language}. Ensure no English text or brackets appear in the final output instructions.
+      4. Bias Control: Be extremely neutral regarding gender and religion.
+
+  - id: analysis_phenology_first
+    text: |
+      Analysis Instructions (Growth-Stage Centric):
+      Center your analysis on the Biology of the plant.
+      1. Biological Needs: What does the crop specifically need right now (at this Stage) regarding NPK and Water?
+      2. Environmental Gap: How is the predicted Weather deviating from these needs?
+      3. Stress Management: Tailor the advice to protect the biological process. Select technical terms (like NPK or chemical names) and convert them to their spoken {target_language} equivalents. Do not use brackets.
+      4. Neutrality Constraint: Be extremely neutral regarding gender and religion.
+
+  - id: analysis_holistic_health
+    text: |
+      Instructions for Analysis (Holistic Approach):
+      Look at the farm as a whole system.
+      - Weather Impact: How does the forecast affect soil moisture and plant respiration?
+      - Biotic Stress: Analyze the Pest/Disease input. Is it a symptom of poor soil or weather stress?
+      - Remedy Construction: Provide a Complete Care Package. For all medicine names, use the phonetic {target_language} script only. Do not provide English alternatives in brackets.
+      - Social Neutrality: Be extremely neutral regarding gender and religion.
+
+  - id: analysis_defensive_strategy
+    text: |
+      Internal Logic (Defensive Strategy):
+      Treat the advisory as a defense plan.
+      1. Identify the Enemy: Analyze the Stress and Weather to find the primary threat.
+      2. Assess Defenses: Is the crop strong enough (Stage) to resist this?
+      3. Deploy Countermeasures: Formulate the advice. Identify the required chemicals and ensure their names are generated strictly in the {target_language} without any bracketed English text.
+      4. Tone Check: Be extremely neutral regarding gender and religion.
+
+  - id: analysis_simple_heuristic
+    text: |
+      Analysis Instructions (Heuristic):
+      Use simple agricultural heuristics to process the data.
+      - IF Weather is Wet AND Stage is Flowering -> Risk of fungal infection is HIGH.
+      - IF Stress is Sucking Pest AND Weather is Dry/Cloudy -> Risk of rapid spread is HIGH. And various other rules.
+      - Based on these rules, synthesize a narrative. Ensure all technical terms (fungicides/insecticides) are spoken in the {target_language} only. Do not use brackets.
+      - Constraint: Be extremely neutral regarding gender and religion.
+
+  - id: analysis_educational_narrative
+    text: |
+      Internal Processing (Educational Logic):
+      Analyze the data to teach the farmer.
+      1. Diagnosis: Why is this Stress appearing in this Weather? Understand the science.
+      2. Implication: How will this specifically hurt the Crop Stage?
+      3. Prescription: Formulate the advice as a lesson. When specifying medicines, use the phonetic {target_language} equivalent. Ensure no English words or brackets are used in the final prescription.
+      4. Neutrality: Be extremely neutral regarding gender and religion.
