@@ -9,3 +9,7 @@ dotenv
 google.genai
 pathlib
 pyyaml
+markdown 
+pdfkit
+python-docx
+docx2pdf

@@ -1,0 +1,20 @@
+group: farming_practice
+description: "The strategic approach or methodology the farmer wants to adopt."
+attributes:
+  - input_cost_level
+  - ecological_impact
+  - market_certification_potential
+
+entries:
+  - id: practice_conventional
+    label: "रासायनिक खेती (Conventional/Chemical Farming)"
+
+  - id: practice_organic
+    label: "जैविक / प्राकृतिक खेती (Organic/Natural Farming)"
+
+  - id: practice_ipm
+    label: "एकीकृत कीट प्रबंधन (Integrated Pest Management - IPM)"
+    
+  - id: practice_low_cost
+    label: "कम लागत वाली खेती (Low Input / ZBNF)"
+

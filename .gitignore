@@ -12,6 +12,7 @@
 !tests/
 !sample_data
 !data
+!util/
 
 # 3) Optional: keep sample_data if you want it
 # !sample_data/

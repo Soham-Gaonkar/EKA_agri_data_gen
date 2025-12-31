@@ -14,7 +14,7 @@ class TaxonomyManager:
     Each taxonomy corresponds to exactly one dimension (group).
     """
 
-    REQUIRED_KEYS = {"group", "attributes", "entries"}
+    REQUIRED_KEYS = {"group", "entries"}
 
     def __init__(self, db_name: str = "taxonomy_db", collection_name: str = "taxonomies"):
         mongo_uri = os.getenv("MONGO_URI")
@@ -42,15 +42,20 @@ class TaxonomyManager:
 
         if not taxonomy_paths:
             raise FileNotFoundError(f"No taxonomy files found in {taxonomy_dir}")
-
+        
+       
         for path in taxonomy_paths:
             taxonomy = self._load_taxonomy_file(path)
             self._validate_taxonomy_schema(taxonomy)
 
+            attributes = taxonomy.get("attributes")
+            if attributes is None:
+                attributes = []
+
             taxonomy_doc = {
                 "group": taxonomy["group"],
                 "description": taxonomy.get("description", ""),
-                "attributes": taxonomy["attributes"],
+                "attributes": attributes,
                 "entries": taxonomy["entries"],
                 "source_file": path.name,
                 "active": True
@@ -112,13 +117,17 @@ class TaxonomyManager:
                 f"is missing required keys: {missing}"
             )
 
-        if not isinstance(taxonomy["attributes"], list):
-            raise TypeError("taxonomy.attributes must be a list")
+        if "attributes" in taxonomy and taxonomy["attributes"] is not None:
+            if not isinstance(taxonomy["attributes"], list):
+                raise TypeError(f"Taxonomy '{taxonomy.get('group')}' attributes must be a list")
 
         if not isinstance(taxonomy["entries"], list):
             raise TypeError("taxonomy.entries must be a list")
 
         for entry in taxonomy["entries"]:
+            if "id" not in entry:
+                 raise ValueError(f"Entry missing 'id': {entry}")
+
             if "id" not in entry or "label" not in entry:
                 raise ValueError(
                     f"Each taxonomy entry must have 'id' and 'label': {entry}"

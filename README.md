@@ -136,6 +136,11 @@ This submits your bundles to Google's background servers. It is the fastest and 
 python -m agri_data_gen.cli.main batch-run
 ```
 
+- if running batch_run(submit job) and check_batch(download and parse raw results) independently:
+```bash
+python -m agri_data_gen.cli.main check-batch "batches/filename"
+```
+
 ### Load YAML Taxonomies to MongoDB
 
 ```bash

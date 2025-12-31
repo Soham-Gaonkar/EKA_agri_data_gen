@@ -23,20 +23,6 @@ entries:
       - id: stress_wheat_termite
         label: "दीमक (Termites)"
 
-  - id: crop_rice
-    label: "धान"
-    problems:
-      - id: stress_rice_blast
-        label: "झोंका रोग / ब्लास्ट (Blast)"
-      - id: stress_rice_blb
-        label: "जीवाणु झुलसा (Bacterial Blight)"
-      - id: stress_rice_stem_borer
-        label: "तना छेदक (Stem Borer)"
-      - id: stress_rice_bph
-        label: "भूरा फुदका (Brown Plant Hopper)"
-      - id: stress_rice_false_smut
-        label: "हल्दी गांठ रोग (False Smut)"
-
   - id: crop_cotton
     label: "कपास"
     problems:
@@ -93,16 +79,74 @@ entries:
       - id: stress_maize_downy_mildew
         label: "तुलासिता रोग (Downy Mildew)"
 
-  - id: crop_groundnut
-    label: "मूंगफली"
+
+  - id: crop_gram
+    label: "चना"
     problems:
-      - id: stress_groundnut_tikka
-        label: "टिक्का रोग (Tikka Disease)"
-      - id: stress_groundnut_collar_rot
-        label: "कालर रॉट (Collar Rot)"
-      - id: stress_groundnut_white_grub
-        label: "सफेद लट (White Grub)"
-      - id: stress_groundnut_aphid
-        label: "माहू (Groundnut Aphid)"
-      - id: stress_groundnut_rust
-        label: "रतुआ (Rust)"
+      - id: stress_gram_pod_borer
+        label: "फली छेदक (Pod Borer/Heliothis)"
+      - id: stress_gram_wilt
+        label: "उकठा रोग (Wilt)"
+      - id: stress_gram_blight
+        label: "झुलसा रोग (Ascochyta Blight)"
+      - id: stress_gram_cutworm
+        label: "कटवर्म (Cutworm)"
+      - id: stress_gram_dry_root_rot
+        label: "जड़ सड़न (Dry Root Rot)"
+
+  - id: crop_onion
+    label: "प्याज"
+    problems:
+      - id: stress_onion_purple_blotch
+        label: "बैंगनी धब्बा (Purple Blotch)"
+      - id: stress_onion_thrips
+        label: "थ्रिप्स / जू (Thrips)"
+      - id: stress_onion_downy_mildew
+        label: "तुलासिता (Downy Mildew)"
+      - id: stress_onion_stemphylium
+        label: "झुलसा (Stemphylium Blight)"
+      - id: stress_onion_maggot
+        label: "प्याज की मक्खी (Onion Maggot)"
+
+
+  - id: crop_potato
+    label: "आलू"
+    problems:
+      - id: stress_potato_late_blight
+        label: "पछेती झुलसा (Late Blight)"
+      - id: stress_potato_early_blight
+        label: "अगेती झुलसा (Early Blight)"
+      - id: stress_potato_leaf_roll
+        label: "पत्ती मुड़न (Leaf Roll Virus)"
+      - id: stress_potato_tuber_moth
+        label: "कंद शलभ (Potato Tuber Moth)"
+      - id: stress_potato_black_scurf
+        label: "काली रूसी (Black Scurf)"
+
+  - id: crop_tur
+    label: "अरहर / तुअर"
+    problems:
+      - id: stress_tur_pod_borer
+        label: "फली छेदक (Pod Borer/Helicoverpa)"
+      - id: stress_tur_wilt
+        label: "उकठा (Wilt)"
+      - id: stress_tur_pod_fly
+        label: "फली मक्खी (Pod Fly)"
+      - id: stress_tur_sterility_mosaic
+        label: "बांझपन मोजेक (Sterility Mosaic Virus)"
+      - id: stress_tur_leaf_webber
+        label: "पत्ती लपेटक (Leaf Webber)"
+
+  - id: crop_bajra
+    label: "बाजरा"
+    problems:
+      - id: stress_bajra_downy_mildew
+        label: "तुलासिता / जोगिया रोग (Downy Mildew/Green Ear)"
+      - id: stress_bajra_ergot
+        label: "चेपा / गूंदिया रोग (Ergot)"
+      - id: stress_bajra_smut
+        label: "कंडवा (Smut)"
+      - id: stress_bajra_shoot_fly
+        label: "तने की मक्खी (Shoot Fly)"
+      - id: stress_bajra_stem_borer
+        label: "तना छेदक (Stem Borer)"

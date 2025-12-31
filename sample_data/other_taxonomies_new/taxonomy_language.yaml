@@ -1,0 +1,13 @@
+group: target_language
+description: "Target Indic languages for generating localized agricultural advisories."
+
+
+entries:
+  - id: lang_hindi
+    label: "Hindi"
+
+  - id: lang_marathi
+    label: "Marathi"
+
+  - id: lang_gujarati
+    label: "Gujarati"

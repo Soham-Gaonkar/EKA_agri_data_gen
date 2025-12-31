@@ -9,8 +9,9 @@ entries:
       1. Phenological Check: Cross-reference the specific Weekly Weather against the Crop Growth Stage. Is the weather favorable or hostile for this specific stage?
       2. Pathogen Prediction: specific high-humidity or temperature patterns provided. Does this environment favor the specific Stress (pest/disease) listed in the input?
       3. Comprehensive Protocol: Formulate a solution that addresses the immediate threat while maintaining soil health and water balance, etc.
-      4. Term Selection (Crucial): Identify necessary chemicals or inputs and convert them strictly to their phonetic {target_language} equivalent. Do not include English spellings or brackets.
+      4. Term Selection (Crucial): Identify necessary chemicals or inputs and convert them strictly to their phonetic equivalent matching the input language. Do not include English spellings or brackets.
       5. Neutrality: Be extremely neutral regarding gender and religion in your tone and examples.
+      6. Data Validity Protocol: Perform a final sanity check. If the combination of Crop, Weather, and Stage is scientifically impossible, do not generate advice. Instead, clearly state in the user's input language that the scenario is scientifically impossible (or natural equivalent) and briefly explain the biological contradiction.
 
   - id: analysis_risk_triage
     text: |
@@ -18,8 +19,9 @@ entries:
       Analyze the input to determine the Urgency Level.
       1. Threat Assessment: Evaluate the Stress input. Is it a minor nuisance or a crop-destroying threat given the current weather?
       2. Impact Analysis: If action is not taken, what will happen to the yield? Use this to determine the tone of the advice.
-      3. Action Formulation: Create a multi-layered defense plan. Select specific medicines or fertilizers and ensure they are generated solely in the {target_language} script without parentheses or English terms.
+      3. Action Formulation: Create a multi-layered defense plan. Select specific medicines or fertilizers and ensure they are generated solely in the script used in the user's prompt without parentheses or English terms.
       4. Bias Check: Ensure the advice is extremely neutral regarding gender and religion.
+      5. Feasibility Check: Before triage, confirm reality. If the input describes a non-existent threat level (e.g., winter pest in summer), abort the plan. Inform the user in their specific language that the situation is not possible and provide a short reason for this assessment.
 
   - id: analysis_cause_effect
     text: |
@@ -27,8 +29,9 @@ entries:
       Don't just look at the data; connect the dots.
       - The Trigger: How is the current Weather acting as a catalyst for the Stress/Risk?
       - The Vulnerability: Why is the Crop Stage specifically sensitive right now?
-      - The Solution: Derive the advice based on breaking this chain. Select chemical names that can be spoken naturally in the {target_language}. Do not use brackets for English terms.
+      - The Solution: Derive the advice based on breaking this chain. Select chemical names that can be spoken naturally in the language of the inquiry. Do not use brackets for English terms.
       - Tone: Be extremely neutral regarding gender and religion.
+      - Consistency Validator: If the Cause (Weather) and Effect (Stress) are mutually exclusive, break the chain. Directly inform the user in the input language that these conditions contradict each other and briefly explain the logical flaw without generating false advice.
 
   - id: analysis_ipm_focus
     text: |
@@ -36,8 +39,9 @@ entries:
       Adopt an IPM mindset for analysis.
       1. Monitoring: Confirm if the Stress mentioned is seasonal for this Region.
       2. Threshold Analysis: Based on the Weather, is the pest population likely to explode?
-      3. Intervention Logic: Prioritize Cultural and Biological solutions first. If Chemical interventions are needed, select the specific trade name and transliterate it into the {target_language} script. Do not output the English name or use brackets.
+      3. Intervention Logic: Prioritize Cultural and Biological solutions first. If Chemical interventions are needed, select the specific trade name and transliterate it into the native script of the interaction script. Do not output the English name or use brackets.
       4. Neutrality: Be extremely neutral regarding gender and religion throughout the advisory.
+      5. Ecological Reality Check: If the reported pest is biologically incapable of surviving in the reported weather, do not fabricate a solution. Inform the farmer in their native language that the pest infestation is not possible under the current conditions and explain why.
 
   - id: analysis_economic_logic
     text: |
@@ -45,8 +49,9 @@ entries:
       Analyze the situation from a cost-benefit perspective.
       1. Risk vs. Cost: Is the Stress severe enough to warrant expensive inputs? Analyze the Weather to see if it will naturally control the pest.
       2. Operational Feasibility: Can the farmer actually enter the field?
-      3. Advisory Formulation: Create a plan that saves the crop. When listing inputs, use only the {target_language}. Ensure no English text or brackets appear in the final output instructions.
+      3. Advisory Formulation: Create a plan that saves the crop. When listing inputs, use only the requested language. Ensure no English text or brackets appear in the final output instructions.
       4. Bias Control: Be extremely neutral regarding gender and religion.
+      5. Operational Viability: If the input data represents a technically impossible farming situation, abort the ROI calculation. Inform the user in the target language that this scenario is not operationally feasible and cite the specific constraint.
 
   - id: analysis_phenology_first
     text: |
@@ -54,8 +59,9 @@ entries:
       Center your analysis on the Biology of the plant.
       1. Biological Needs: What does the crop specifically need right now (at this Stage) regarding NPK and Water?
       2. Environmental Gap: How is the predicted Weather deviating from these needs?
-      3. Stress Management: Tailor the advice to protect the biological process. Select technical terms (like NPK or chemical names) and convert them to their spoken {target_language} equivalents. Do not use brackets.
+      3. Stress Management: Tailor the advice to protect the biological process. Select technical terms (like NPK or chemical names) and convert them to their spoken equivalents in the farmer's language. Do not use brackets.
       4. Neutrality Constraint: Be extremely neutral regarding gender and religion.
+      5. Phenological Mismatch: If the Crop Growth Stage is temporally impossible given the season, stop. Explicitly inform the user in their language that the crop stage cannot occur in the current weather/season and explain the mismatch.
 
   - id: analysis_holistic_health
     text: |
@@ -63,8 +69,9 @@ entries:
       Look at the farm as a whole system.
       - Weather Impact: How does the forecast affect soil moisture and plant respiration?
       - Biotic Stress: Analyze the Pest/Disease input. Is it a symptom of poor soil or weather stress?
-      - Remedy Construction: Provide a Complete Care Package. For all medicine names, use the phonetic {target_language} script only. Do not provide English alternatives in brackets.
+      - Remedy Construction: Provide a Complete Care Package. For all medicine names, use the phonetic script corresponding to the input only. Do not provide English alternatives in brackets.
       - Social Neutrality: Be extremely neutral regarding gender and religion.
+      - System Integrity: Verify if the farm ecosystem inputs are coherent. If they contradict to the point of impossibility, do not guess. State clearly in the user's language that the described farm conditions are incompatible and briefly pinpoint the conflict.
 
   - id: analysis_defensive_strategy
     text: |
@@ -72,8 +79,9 @@ entries:
       Treat the advisory as a defense plan.
       1. Identify the Enemy: Analyze the Stress and Weather to find the primary threat.
       2. Assess Defenses: Is the crop strong enough (Stage) to resist this?
-      3. Deploy Countermeasures: Formulate the advice. Identify the required chemicals and ensure their names are generated strictly in the {target_language} without any bracketed English text.
+      3. Deploy Countermeasures: Formulate the advice. Identify the required chemicals and ensure their names are generated strictly in the language specified by the user without any bracketed English text.
       4. Tone Check: Be extremely neutral regarding gender and religion.
+      5. Threat Verification: Validate the intelligence. If the enemy (Stress) cannot exist on the battlefield (Weather) described, do not deploy countermeasures. Inform the user in their language that the threat is impossible in the current climate and state the reason.
 
   - id: analysis_simple_heuristic
     text: |
@@ -81,8 +89,9 @@ entries:
       Use simple agricultural heuristics to process the data.
       - IF Weather is Wet AND Stage is Flowering -> Risk of fungal infection is HIGH.
       - IF Stress is Sucking Pest AND Weather is Dry/Cloudy -> Risk of rapid spread is HIGH. And various other rules.
-      - Based on these rules, synthesize a narrative. Ensure all technical terms (fungicides/insecticides) are spoken in the {target_language} only. Do not use brackets.
+      - Based on these rules, synthesize a narrative. Ensure all technical terms (fungicides/insecticides) are spoken in the local language defined in the input only. Do not use brackets.
       - Constraint: Be extremely neutral regarding gender and religion.
+      - Exception handling: If the inputs violate basic agricultural heuristics, stop processing. Inform the user in the target language that the scenario is invalid and state the specific rule that was broken.
 
   - id: analysis_educational_narrative
     text: |
@@ -90,5 +99,6 @@ entries:
       Analyze the data to teach the farmer.
       1. Diagnosis: Why is this Stress appearing in this Weather? Understand the science.
       2. Implication: How will this specifically hurt the Crop Stage?
-      3. Prescription: Formulate the advice as a lesson. When specifying medicines, use the phonetic {target_language} equivalent. Ensure no English words or brackets are used in the final prescription.
+      3. Prescription: Formulate the advice as a lesson. When specifying medicines, use the phonetic equivalent matching the conversation's language. Ensure no English words or brackets are used in the final prescription.
       4. Neutrality: Be extremely neutral regarding gender and religion.
+      5. Premise Verification: Ensure we are not teaching based on false premises. If the user provides an impossible agricultural scenario, correct them by stating in their language that the situation cannot occur and briefly explain the factual error as a teaching moment.

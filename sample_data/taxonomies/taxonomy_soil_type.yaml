@@ -1,0 +1,16 @@
+group: soil_type
+description: "Soil texture categories that dictate irrigation and nutrient management strategies."
+attributes:
+  - जल_धारण_क्षमता          
+  - पोषक_तत्व_रिसाव_जोखिम  
+  - जुताई_की_कठिनाई         
+
+entries:
+  - id: soil_heavy_clay
+    label: "भारी मिट्टी / काली मिट्टी (Heavy/Black Clay Soil)"
+
+  - id: soil_light_sandy
+    label: "हल्की मिट्टी / बलुई दोमट (Light/Sandy Loam Soil)"
+
+  - id: soil_medium_loam
+    label: "मध्यम मिट्टी / दोमट मिट्टी (Medium/Alluvial Loam Soil)"

@@ -19,11 +19,15 @@ class BundleBuilder:
         
         # mix freely with everything
         self.INDEPENDENT_AXES = [
-            "region",
             "growth_stage",
             "weather",
+            "soil_type",
+            "farming_practice"
         ]
-        self.DEPENDENT_GROUPS = ["crop"]
+        self.DEPENDENT_GROUPS = [
+            "crop",
+            "region_lang",
+        ]
         
         # We will initialize adapters in load_all() once we have the schema
         self.adapters = {}
@@ -55,7 +59,6 @@ class BundleBuilder:
         print(f"Building ordered bundles into: {output_path} ...")
 
         # 1. Collect Data for each Axis in strict order
-        # axes_data = []
         independent_axes_data = []
 
         for group_name in self.INDEPENDENT_AXES:
@@ -78,70 +81,77 @@ class BundleBuilder:
             
             independent_axes_data.append(current_axis_values)
 
-        # 2. Generate Combinations
+
+        # Generate Combinations
+        #crop
         crop_def = next((t for t in self.taxonomies if t["group"] == "crop"), None)
         if not crop_def:
             raise ValueError("Crop taxonomy missing!")
-        
         crop_adapter = self.adapters.get("crop")
         crop_entries = crop_def["entries"]
 
-        # ====================================================
-        # STEP 3: HYBRID GENERATION LOOP
-        # ====================================================
+        #region
+        region_def = next((t for t in self.taxonomies if t["group"] == "region_lang"), None)
+        if not region_def:
+            raise ValueError("Region_lang taxonomy missing!")
+        region_adapter = self.adapters.get("region_lang")
+        region_entries = region_def["entries"]
+
+        #HYBRID GENERATION LOOP
         count = 0
         with open(output_path, 'w', encoding='utf-8') as f:
             
-            # A. Loop through every combination of Independent Variables
-            # (e.g., MP + Heavy Rain + Flowering)
+            #cartesian product (independent entries)
             for indep_combo in itertools.product(*independent_axes_data):
-                
-                # Create the base context for this scenario
-                base_bundle = {}
+                context_bundle = {}
                 for group_name, data in indep_combo:
-                    base_bundle[group_name] = data
+                    context_bundle[group_name] = data
 
-                # B. Loop through Crops
-                for crop_entry in crop_entries:
-                    # Process crop data via adapter
-                    processed_crop = crop_adapter.sample(crop_entry).get("data", crop_entry)
-                    
-                    # Extract the nested problems list
-                    # IMPORTANT: Use .get() to avoid errors if a crop has no problems listed
-                    problems_list = processed_crop.get("problems", [])
+                # Region
+                for region_entry in region_entries:
+                    processed_region = region_adapter.sample(region_entry).get("data", region_entry)
+                    allowed_languages = processed_region.get("languages", [])
 
-                    if not problems_list:
+                    if not allowed_languages: 
                         continue
 
-                    # Clean the crop object for the bundle
-                    # We remove the full 'problems' list so it doesn't clutter the final JSON
-                    crop_payload = processed_crop.copy()
-                    if "problems" in crop_payload:
-                        del crop_payload["problems"]
+                    region_payload = processed_region.copy()
+                    if "languages" in region_payload:
+                        del region_payload["languages"]
 
-                    # C. Loop through the Specific Problems for this Crop
-                    for problem in problems_list:
+                    #Languages (Nested inside Region)
+                    for lang_entry in allowed_languages:
                         
-                        # Clone the base bundle
-                        final_bundle = base_bundle.copy()
-                        final_bundle["id"] = count + 1
-                        
-                        # Add Crop and Specific Stress
-                        final_bundle["crop"] = crop_payload
-                        final_bundle["stress"] = problem # This contains the specific ID and Label
-                        
-                        # Write to file
-                        f.write(json.dumps(final_bundle, ensure_ascii=False) + "\n")
-                        count += 1
+                        #region+Language
+                        base_bundle = context_bundle.copy()
+                        base_bundle["region"] = region_payload
+                        base_bundle["language"] = lang_entry
+
+                        #crops
+                        for crop_entry in crop_entries:
+                            processed_crop = crop_adapter.sample(crop_entry).get("data", crop_entry)
+                            problems_list = processed_crop.get("problems", [])
+
+                            if not problems_list:
+                                continue
+
+                            crop_payload = processed_crop.copy()
+                            if "problems" in crop_payload:
+                                del crop_payload["problems"]
+
+                            for problem in problems_list:
+                                # Clone the base bundle
+                                final_bundle = base_bundle.copy()
+                                final_bundle["id"] = count + 1
+                                # Add Crop and Specific Stress
+                                final_bundle["crop"] = crop_payload
+                                final_bundle["stress"] = problem # This contains the specific ID and Label
+                                
+                                f.write(json.dumps(final_bundle, ensure_ascii=False) + "\n")
+                                count += 1
 
         print(f"Successfully generated {count} valid scenarios.")
         return str(output_path)
-
-
-
-
-
-
 
 
 

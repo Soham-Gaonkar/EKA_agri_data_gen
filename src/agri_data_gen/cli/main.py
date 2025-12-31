@@ -41,7 +41,7 @@ def reset_taxonomies():
 
 
 @app.command()
-def batch_run(bundle_file: str = "data/bundles/test_50_samples.jsonl"):
+def batch_run(bundle_file: str = "data/bundles/test_1000000_samples.jsonl"):
     """
     Submits the generated bundles to Google Batch API.
     """
@@ -52,7 +52,8 @@ def batch_run(bundle_file: str = "data/bundles/test_50_samples.jsonl"):
 
     print(f"Submitting Batch Job for: {bundle_file}")
     
-    processor = TextBatchJob()
+    processor = TextBatchJob(batch_size=100)
+
 
     processor.create_jsonl(bundle_file) 
     job = processor.submit_job()

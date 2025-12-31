@@ -1,0 +1,19 @@
+group: irrigation_source
+description: "The water infrastructure available to the farmer, dictating moisture management strategies."
+attributes:
+  - control_level
+  - water_quality_risk
+  - fertigation_potential
+
+entries:
+  - id: source_rainfed
+    label: "वर्षा आधारित (Rainfed / No Irrigation)"
+
+  - id: source_tube_well
+    label: "ट्यूबवेल / बोरवेल (Tube Well / Groundwater)"
+
+  - id: source_canal
+    label: "नहर की सिंचाई (Canal / Surface Irrigation)"
+
+  - id: source_micro_irrigation
+    label: "ड्रिप / स्प्रिंकलर (Drip / Sprinkler)"

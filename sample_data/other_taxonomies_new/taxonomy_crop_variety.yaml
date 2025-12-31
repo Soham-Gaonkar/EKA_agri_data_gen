@@ -1,0 +1,16 @@
+group: crop_variety_type
+description: "The genetic background of the crop."
+
+
+entries:
+  - id: variety_desi
+    label: "देसी / पारंपरिक किस्म (Desi / Traditional Variety)"
+    description: "Lower yield but higher pest tolerance. Needs less fertilizer."
+
+  - id: variety_hybrid_high_yield
+    label: "संकर / हाइब्रिड (Hybrid / High Yielding)"
+    description: "High yield potential but sensitive to pests/stress. High input requirement."
+  
+  - id: variety_gmo_bt
+    label: "बीटी / जीएमओ (Bt / GMO - if applicable)"
+    description: "Specific resistance to bollworms (Cotton/Brinjal only). requires different pest management."

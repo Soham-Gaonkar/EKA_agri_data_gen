@@ -1,18 +1,57 @@
-group: region
+group: region_lang
 description: "लक्षित क्षेत्र"
 attributes:
   - कृषि_जलवायु_क्षेत्र
   - प्रमुख_मृदा_प्रकार
   - वार्षिक_वर्षा_रेंज
   - प्रमुख_फसल_प्रणाली
+
+
 entries:
   - id: reg_gujarat
     label: "गुजरात"
+    languages:
+      - id: lang_hindi
+        label: "Hindi"
+
+      # - id: lang_gujarati
+      #   label: "Gujarati"
+
   - id: reg_punjab
     label: "पंजाब"
+    languages:
+      - id: lang_hindi
+        label: "Hindi"
+
   - id: reg_haryana
     label: "हरियाणा"
+    languages:
+      - id: lang_hindi
+        label: "Hindi"
+
   - id: reg_up
     label: "उत्तर प्रदेश"
+    languages:
+      - id: lang_hindi
+        label: "Hindi"
+
   - id: reg_mp
     label: "मध्य प्रदेश"
+    languages:
+      - id: lang_hindi
+        label: "Hindi"
+
+  - id: reg_rajasthan
+    label: "राजस्थान"
+    languages:
+      - id: lang_hindi
+        label: "Hindi"
+
+  - id: reg_maharashtra
+    label: "महाराष्ट्र"
+    languages:
+      - id: lang_hindi
+        label: "Hindi"
+      
+      # - id: lang_marathi
+      #   label: "Marathi"

@@ -2,11 +2,14 @@ import time
 import json
 import os
 import yaml
+import itertools
 import random
 import logging
 from google import genai
 from google.genai import types
 from dotenv import load_dotenv
+
+from agri_data_gen.gemini_batch_processing.parser import extract
 
 
 load_dotenv()
@@ -15,16 +18,17 @@ logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(levelname)s - %(
 logger = logging.getLogger(__name__)
 
 class TextBatchJob:
-    def __init__(self, job_name="agri-advisory-job"):
+    def __init__(self, job_name="agri-advisory-job", batch_size=10000):
         self.api_key = os.getenv('GOOGLE_API_KEY_SOKET')
         self.model_name = "models/gemini-2.5-flash"
         self.client = genai.Client(api_key=self.api_key)  
         self.job_name = job_name
         self.job_id = f"{job_name}_{int(time.time())}"
         self.output_dir = f"output/{self.job_id}"
-        os.makedirs(self.output_dir, exist_ok=True)
         self.jsonl_path = f"{self.output_dir}/batch_requests.jsonl"
         self.sys_instructions = self.load_system_instructions("data/sys_instructions/system_instructions.jsonl")
+        self.batch_size = batch_size    
+        self.cursor_file = "data/cursor.txt"  #state file
 
     def prepare_prompt(self, data_bundle):
         """
@@ -61,43 +65,70 @@ class TextBatchJob:
              raise ValueError("System instructions list is empty!")
         
         selected_obj = random.choice(self.sys_instructions)
-        target_lang = "Hindi"
-        final_instruction = selected_obj['system_instruction'].replace("{target_language}", target_lang)
+        return selected_obj['system_instruction']
 
-        # Returns just the text content of the instruction
-        return final_instruction
+
+
+    def _get_start_index(self):
+        """Reads the last processed index from the cursor file."""
+        if not os.path.exists(self.cursor_file):
+            return 0
+        try:
+            with open(self.cursor_file, 'r') as f:
+                return int(f.read().strip())
+        except ValueError:
+            return 0
+
+    def _update_cursor(self, new_index):
+        """Updates the cursor file with the new index."""
+        with open(self.cursor_file, 'w') as f:
+            f.write(str(new_index))
 
 
     def create_jsonl(self, input_file_path: str= "data/bundles/bundles.jsonl"):
         """
-        Reads input bundles from a JSONL file line-by-line and writes 
+        Reads input bundles using the Cursor Method.
         formatted Batch API requests to the output JSONL file.
-        This allows processing massive datasets without memory issues.
         """
+        start_index = self._get_start_index()
+        logger.info(f"Cursor found at index: {start_index}. Processing next {self.batch_size} records.")
+
+        if not os.path.exists(input_file_path):
+            logger.error("Input file not found.")
+            return False
+
+        os.makedirs(self.output_dir, exist_ok=True) # Create output dir now
 
         logger.info(f"Reading from {input_file_path}...")
         logger.info(f"Writing batch requests to {self.jsonl_path}...")
         request_count = 0
+        lines_processed_in_this_run = 0
         
         with open(input_file_path, 'r', encoding='utf-8') as infile, \
                     open(self.jsonl_path, 'w', encoding='utf-8') as outfile:
             
-            for index, line in enumerate(infile):
+            # 2. Efficiently Skip 'start_index' lines 
+            # islice(iterator, start, stop) -> skips to 'start', stops at 'stop'
+            # stopping at start_index + self.batch_size creates the exact chunk we need
+            batch_iterator = itertools.islice(infile, start_index, start_index + self.batch_size)
+
+            for line in batch_iterator:
+                lines_processed_in_this_run += 1
                 try:
                     bundle = json.loads(line.strip())
-                    custom_id = bundle.get('bundle_id', f"req_{index}")
+                    custom_id = bundle.get('id', f"req_{start_index + lines_processed_in_this_run}")
 
                     prompt_text = json.dumps(self.prepare_prompt(bundle),  ensure_ascii=False) #json dump to parse into string - save token 
                     sys_instruction_text = self.get_random_system_instruction()
 
                     # Construct Request Object 
                     request_entry = {
-                        "custom_id": custom_id, 
+                        "custom_id": str(custom_id), 
                         "request": { 
                             "contents": [{"parts": [{"text": prompt_text}]} ],
                             "system_instruction": { "parts": [{"text": sys_instruction_text}] },
                             "generationConfig": {
-                                "responseMimeType": "application/json", 
+                                "responseMimeType": "text/plain", 
                                 "temperature": 0.2,
                                 "thinkingConfig": { 
                                     "includeThoughts": True,
@@ -112,10 +143,20 @@ class TextBatchJob:
                     request_count += 1
                     
                 except json.JSONDecodeError:
-                    logger.error(f"Skipping invalid JSON at line {index}")
+                    logger.error(f"Skipping invalid JSON at line ")
                     continue
         
+        if request_count == 0:
+            logger.info("No new records found. The job is complete!")
+            return False # Signal that there is no work to do
+
+        # Update Cursor ONLY if requests were written successfully
+        new_cursor = start_index + lines_processed_in_this_run
+        self._update_cursor(new_cursor)
+        
         logger.info(f"Successfully created batch file with {request_count} requests.")
+        logger.info(f"Cursor updated to {new_cursor}.")
+        return True 
 
 
     def submit_job(self):
@@ -150,8 +191,8 @@ class TextBatchJob:
             if state in ["JOB_STATE_SUCCEEDED", "JOB_STATE_FAILED", "JOB_STATE_CANCELLED"]:
                 return job_status
             
-            time.sleep(60) 
-            print("waiting for 60")
+            time.sleep(180) 
+            print("waiting for 120")
 
 
     def download_and_parse_results(self):
@@ -172,62 +213,21 @@ class TextBatchJob:
         content = self.client.files.download(file=output_file_name)
 
         # Save Raw Output
+        os.makedirs(self.output_dir, exist_ok=True)
         raw_path = f"{self.output_dir}/raw_results.jsonl"
         with open(raw_path, 'wb') as f:
             f.write(content)
             
         # Parse and Separate Files
-        # self.parse_raw_results(raw_path)
+        extract(raw_path)
+        print(raw_path)
         return raw_path
 
-
-    # def parse_raw_results(self, raw_path):
-    #     logger.info("Parsing results...")
-    #     with open(raw_path, 'r', encoding='utf-8') as f:
-    #         for line in f:
-    #             try:
-    #                 response_item = json.loads(line)
-    #                 custom_id = response_item.get("custom_id", "unknown_id")
-                    
-    #                 if "response" in response_item:
-    #                     candidates = response_item["response"].get("candidates", [])
-    #                     if not candidates: continue
-
-    #                     parts = candidates[0]["content"]["parts"]
-    #                     thinking_text = ""
-    #                     advisory_text = ""
-
-    #                     # Extract Thought vs Answer
-    #                     for part in parts:
-    #                         if part.get("thought") is True:
-    #                             thinking_text += part.get("text", "")
-    #                         else:
-    #                             advisory_text += part.get("text", "")
-
-    #                     # Clean up Advisory JSON
-    #                     try:
-    #                         final_advisory = json.loads(advisory_text)
-    #                     except:
-    #                         final_advisory = {"raw_text": advisory_text}
-
-    #                     # Save Final Clean File
-    #                     final_output = {
-    #                         "id": custom_id,
-    #                         "thinking": thinking_text,
-    #                         "advisory": final_advisory
-    #                     }
-                        
-    #                     out_file = f"{self.output_dir}/{custom_id}.json"
-    #                     with open(out_file, "w", encoding="utf-8") as out:
-    #                         json.dump(final_output, out, indent=2, ensure_ascii=False)
-                            
-    #             except Exception as e:
-    #                 logger.error(f"Error parsing line: {e}")
 
 
 if __name__ == "__main__":
 
-    processor = TextBatchJob()
+    processor = TextBatchJob(batch_size=10000)
     
     processor.create_jsonl("data/bundles/bundles.jsonl")
     
@@ -237,6 +237,7 @@ if __name__ == "__main__":
     
     raw_path = processor.download_and_parse_results()
     print("Saved raw result at: ", raw_path)
+
 
 
 

@@ -5,8 +5,7 @@ attributes:
   - प्रमुख_शारीरिक_परिवर्तन
   - महत्वपूर्ण_पोषक_तत्व_आवश्यकता
 entries:
-  - id: stage_sowing
-    label: "बुवाई / अंकुरण"
+
   - id: stage_vegetative
     label: "वानस्पतिक वृद्धि / कल्ले फूटना"
   - id: stage_flowering

@@ -6,18 +6,34 @@ attributes:
   - आर्द्रता_स्तर
   - सलाह_की_प्राथमिकता
 
+
 entries:
   - id: weather_ideal
     label: "सामान्य / अनुकूल मौसम"
 
   - id: weather_drought
-    label: "सूखा / वर्षा की कमी "
+    label: "सूखा / वर्षा की कमी"
 
   - id: weather_heavy_rain
-    label: "भारी वर्षा / जलभराव "
+    label: "भारी वर्षा / जलभराव"
 
   - id: weather_frost
-    label: "पाला / शीत लहर "
+    label: "पाला / शीत लहर"
 
   - id: weather_humid_cloudy
-    label: "बादल छाए रहना / उमस "
+    label: "बादल छाए रहना / उमस"
+
+  - id: weather_heat_wave
+    label: "लू / अत्यधिक तापमान (Heat Wave)"
+
+  - id: weather_hailstorm
+    label: "बेमौसम बारिश / ओलावृष्टि (Unseasonal Rain/Hail)"
+
+  - id: weather_strong_wind
+    label: "तेज हवा / आंधी (Strong Winds)"
+
+  - id: weather_dry_spell
+    label: "मानसून में रुकावट / सूखा अंतराल (Dry Spell)"
+
+  - id: weather_high_wind
+    label: "तेज हवा / आंधी (High Wind Velocity)"
