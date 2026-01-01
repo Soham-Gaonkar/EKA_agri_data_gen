@@ -6,7 +6,7 @@ entries:
   - id: constraints_tts_strict_radio
     text: |
       Output Constraints (Radio Script Mode):
-      Broadcast Standard: The script must begin with a neutral, broadcast-safe salutation (e.g., "Kisan Mitron, Namaskar"). Do not use regional colloquialisms that have religious undertones.
+      Broadcast Standard: Do not use regional colloquialisms that have religious undertones.
       Format: Output PURE TEXT only. Absolutely NO Markdown, bullets, or numbering.
       Audio Optimization: Write for the ear, not the eye. Use short, punchy sentences. Use commas (,) frequently to indicate where the speaker should take a breath.
       Language: Ensure your response corresponds strictly to the language specified in the input ONLY. Do not use English words. Transform technical terms into their native spoken equivalents.
@@ -16,7 +16,7 @@ entries:
     text: |
       Output Constraints (Conversational Flow):
       Format: Final speech script only. No internal thoughts.
-      Mandatory Opening: You must start the speech with: "Namaskar Kisan Bhaiyon/Beheno". Do not generate any other opening hook or religious invocation.
+      Mandatory: Do not generate any religious invocation.
       Style: Narrative and fluid. Avoid robotic lists. Connect ideas using transition words.
       Negative Constraints: NO Bold, NO Headers, NO Emojis.
       Tone: Warm and authoritative, like a Village Elder.
@@ -36,7 +36,7 @@ entries:
     text: |
       Output Constraints (Storytelling Style):
       Format: A single continuous spoken narrative.
-      Content Strategy: Begin with an appropriate greeting. Weave the explanation of the risk and the solution into a cohesive story or narrative suitable for a rural audience.
+      Content Strategy: Weave the explanation of the risk and the solution into a cohesive story or narrative suitable for a rural audience.
       Language: Use the rural register/dialect. Avoid textbook formality.
       Forbidden: No bullet points or numbered lists. No English words.
       
@@ -81,7 +81,7 @@ entries:
     text: |
       Output Constraints (Hybrid Technical):
       Format: Multi-paragraph Markdown.
-      Language Rule: Write the advisory in requested language, but also write all Key Entities (Crop Name, Chemical Name, Disease Name) in English within brackets or bold text. Example: "Pyaaz (Onion) mein..."
+      Language Rule: Write the advisory in requested language, but also write Key Entities like Chemical Name, Disease Name, etc in English within brackets to have clarity and avoid confusion.
       Content Flow: Ensure the advisory addresses the weather summary, risk assessment, and action plan in a logical sequence.
       Visuals: Use bolding for emphasis on dosages and numbers.
       
@@ -89,8 +89,7 @@ entries:
     text: |
       Output Constraints (Technical Field Bulletin):
       Format: Detailed, Multi-paragraph Markdown Report.
-      Goal: Deep Education. Do not just tell the farmer what to do; explain why and how in detail.
-      Constraint: Do NOT be brief. Expand on every point. Explain the biological mechanisms (e.g., "High humidity causes fungal spores to germinate because...").
+      Goal: Education. Do not just tell the farmer what to do; explain why and how in detail.
       Visual Structure: Use bold text to denote major sections. Use bullet points for lists, but ensure every bullet point has a full explanatory sentence attached.
       Content Requirements: Provide a comprehensive analysis that includes agronomic factors, a diagnosis of the risk, and detailed management protocols (Cultural, Biological, Chemical).
-      Language: strictly reply in the farmer's own language to build trust and rapport. Technical terms in English are permitted within brackets for precision.      Input Data Template:
+      Language: strictly reply in the farmer's own language to build trust and rapport. Technical terms in English are permitted within brackets for precision.     
