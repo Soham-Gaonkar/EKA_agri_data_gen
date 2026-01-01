@@ -131,14 +131,14 @@ python -m agri_data_gen.cli.main pipeline-run
 ```
 
 ### Batch API processing
-This submits your bundles to Google's background servers. It is the fastest and most robust method for large datasets (>1,000 records).
+Generate bundles only
 ```bash
-python -m agri_data_gen.cli.main batch-run
+python -m agri_data_gen.cli.main generate-only
 ```
 
-- if running batch_run(submit job) and check_batch(download and parse raw results) independently:
+Submit job, wait, download and parse using existing bundles
 ```bash
-python -m agri_data_gen.cli.main check-batch "batches/filename"
+python -m agri_data_gen.cli.main process-batches --api-key "YOUR_KEY_1" --start-index 1 --end-index 4
 ```
 
 ### Load YAML Taxonomies to MongoDB

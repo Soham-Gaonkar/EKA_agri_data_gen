@@ -1,33 +1,40 @@
 import time
+import sys
 import json
 import os
-import yaml
+# import yaml
 import itertools
 import random
+import glob
 import logging
 from google import genai
 from google.genai import types
 from dotenv import load_dotenv
+from pathlib import Path
 
 from agri_data_gen.gemini_batch_processing.parser import extract
 
 
 load_dotenv()
-# Setup simple logging
 logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(levelname)s - %(message)s')
 logger = logging.getLogger(__name__)
 
 class TextBatchJob:
-    def __init__(self, job_name="agri-advisory-job", batch_size=10000):
-        self.api_key = os.getenv('GOOGLE_API_KEY_SOKET')
+    def __init__(self, job_name="agri-advisory-job", api_key=None):
+        
+        self.api_key = api_key if api_key else os.getenv('GOOGLE_API_KEY_SOKET')
+        
         self.model_name = "models/gemini-2.5-flash"
         self.client = genai.Client(api_key=self.api_key)  
         self.job_name = job_name
-        self.job_id = f"{job_name}_{int(time.time())}"
-        self.output_dir = f"output/{self.job_id}"
-        self.jsonl_path = f"{self.output_dir}/batch_requests.jsonl"
+        self.job_base_id = f"{job_name}_{int(time.time())}"
+        self.output_dir = f"output/{self.job_base_id}"
         self.sys_instructions = self.load_system_instructions("data/sys_instructions/system_instructions.jsonl")
-        self.batch_size = batch_size    
+        
+        self.MAX_TOKENS_PER_BATCH = 2_500_000  # Safe Limit
+        self.EST_TOKENS_PER_REQ = 650         
+        self.MAX_REQS_PER_BATCH = self.MAX_TOKENS_PER_BATCH // self.EST_TOKENS_PER_REQ 
+        
         self.cursor_file = "data/cursor.txt"  #state file
 
     def prepare_prompt(self, data_bundle):
@@ -85,43 +92,42 @@ class TextBatchJob:
             f.write(str(new_index))
 
 
-    def create_jsonl(self, input_file_path: str= "data/bundles/bundles.jsonl"):
+    def create_jsonl_batches(self, input_file_path: str= "data/bundles/bundles.jsonl"):
         """
         Reads input bundles using the Cursor Method.
         formatted Batch API requests to the output JSONL file.
         """
         start_index = self._get_start_index()
-        logger.info(f"Cursor found at index: {start_index}. Processing next {self.batch_size} records.")
 
         if not os.path.exists(input_file_path):
             logger.error("Input file not found.")
             return False
 
-        os.makedirs(self.output_dir, exist_ok=True) # Create output dir now
+        os.makedirs(self.output_dir, exist_ok=True) 
 
         logger.info(f"Reading from {input_file_path}...")
-        logger.info(f"Writing batch requests to {self.jsonl_path}...")
-        request_count = 0
-        lines_processed_in_this_run = 0
         
-        with open(input_file_path, 'r', encoding='utf-8') as infile, \
-                    open(self.jsonl_path, 'w', encoding='utf-8') as outfile:
+        created_files = []
+        current_batch_reqs = []
+        total_processed = 0
+        batch_counter = 1
+        
+        with open(input_file_path, 'r', encoding='utf-8') as infile:
             
-            # 2. Efficiently Skip 'start_index' lines 
-            # islice(iterator, start, stop) -> skips to 'start', stops at 'stop'
-            # stopping at start_index + self.batch_size creates the exact chunk we need
-            batch_iterator = itertools.islice(infile, start_index, start_index + self.batch_size)
+            # 2. Efficiently Skip 'start_index' lines (skip already processed lines)
+            iterator = itertools.islice(infile, start_index, None)
 
-            for line in batch_iterator:
-                lines_processed_in_this_run += 1
+            for line in iterator:
                 try:
                     bundle = json.loads(line.strip())
-                    custom_id = bundle.get('id', f"req_{start_index + lines_processed_in_this_run}")
+                    total_processed += 1
 
-                    prompt_text = json.dumps(self.prepare_prompt(bundle),  ensure_ascii=False) #json dump to parse into string - save token 
+                    # Logic: Generate Request Object
+                    custom_id = bundle.get('id', f"req_{start_index + total_processed}")
+                    # prompt_text = json.dumps(self.prepare_prompt(bundle)) #,  ensure_ascii=False) #json dump to parse into string - save token 
+                    prompt_text = self.prepare_prompt(bundle)
                     sys_instruction_text = self.get_random_system_instruction()
 
-                    # Construct Request Object 
                     request_entry = {
                         "custom_id": str(custom_id), 
                         "request": { 
@@ -138,108 +144,136 @@ class TextBatchJob:
                         }
                     }
 
-                    #write to batch file
-                    outfile.write(json.dumps(request_entry, ensure_ascii=False) + "\n")
-                    request_count += 1
+                    current_batch_reqs.append(request_entry)
                     
+                    # Check if batch is full
+                    if len(current_batch_reqs) >= self.MAX_REQS_PER_BATCH:
+                        batch_filename = f"{self.output_dir}/batch_part_{batch_counter:03d}.jsonl"
+                        self._write_batch_file(batch_filename, current_batch_reqs)
+                        created_files.append(batch_filename)
+                        
+                        # Reset for next batch
+                        current_batch_reqs = []
+                        batch_counter += 1
+
                 except json.JSONDecodeError:
-                    logger.error(f"Skipping invalid JSON at line ")
                     continue
+
+            # Write remaining requests if any
+            if current_batch_reqs:
+                batch_filename = f"{self.output_dir}/batch_part_{batch_counter:03d}.jsonl"
+                self._write_batch_file(batch_filename, current_batch_reqs)
+                created_files.append(batch_filename)
         
-        if request_count == 0:
+        if total_processed == 0:
             logger.info("No new records found. The job is complete!")
-            return False # Signal that there is no work to do
+            return None 
 
-        # Update Cursor ONLY if requests were written successfully
-        new_cursor = start_index + lines_processed_in_this_run
-        self._update_cursor(new_cursor)
-        
-        logger.info(f"Successfully created batch file with {request_count} requests.")
-        logger.info(f"Cursor updated to {new_cursor}.")
-        return True 
+        logger.info(f"Created {len(created_files)} batch files containing {total_processed} requests.")
+        return created_files, (start_index + total_processed)
 
 
-    def submit_job(self):
+    def _write_batch_file(self, filename, requests):
+        with open(filename, 'w', encoding='utf-8') as f:
+            for req in requests:
+                f.write(json.dumps(req, ensure_ascii=False) + "\n")
+        logger.info(f"Saved: {filename} ({len(requests)} items)")
+
+
+
+    def submit_wait_download(self, file_path):
         """Uploads the JSONL and starts the Batch Job"""
+        logger.info(f"--- Processing {os.path.basename(file_path)} ---")
         logger.info("Uploading JSONL file to Gemini...")
         batch_input_file = self.client.files.upload(
-            file=self.jsonl_path,
-            config=types.UploadFileConfig(display_name="my-batch-requests", mime_type="text/plain") 
+            file=file_path,
+            config=types.UploadFileConfig(display_name=Path(file_path).stem, mime_type="text/plain")
         )
         
         logger.info(f"File uploaded: {batch_input_file.name}. Starting Batch Job...")
-        
-        self.batch_job = self.client.batches.create( 
+        logger.info("Submitting Job...")
+
+        job = self.client.batches.create( 
             model=self.model_name,
             src=batch_input_file.name,
             config={
-                'display_name': self.job_id,
+                'display_name': f"{self.job_base_id}_{Path(file_path).stem}"
             },
         )
         
-        logger.info(f"Batch Job Created: {self.batch_job.name}")
-        return self.batch_job
+        logger.info(f"Batch Job Created: {job.name}")
 
 
-    def wait_for_completion(self):
-        """Polls the job status"""
+        #wait
+        logger.info("Waiting for completion...")
         while True:
-            job_status = self.client.batches.get(name=self.batch_job.name)
+            job_status = self.client.batches.get(name=job.name)
             state = job_status.state.name 
             logger.info(f"Job Status: {state}")
             
-            if state in ["JOB_STATE_SUCCEEDED", "JOB_STATE_FAILED", "JOB_STATE_CANCELLED"]:
-                return job_status
-            
+            if state == "JOB_STATE_SUCCEEDED":
+                break
+            elif state in ["JOB_STATE_FAILED", "JOB_STATE_CANCELLED"]:
+                logger.error("Job Failed.")
+                return False
+        
             time.sleep(180) 
-            print("waiting for 120")
+            print("waiting for 180")
 
-
-    def download_and_parse_results(self):
-        """Downloads the result file and parses the outputs"""
-        job = self.client.batches.get(name=self.batch_job.name)
-        
-        if job.state.name != "JOB_STATE_SUCCEEDED":
-            logger.error("Job failed or incomplete.") 
-            return 
-
-        # Check both locations just to be safe across SDK versions
-
-        output_file_name = job.dest.file_name
-        
+        #download
+        output_file_name = job_status.dest.file_name
         logger.info(f"Downloading results from {output_file_name}...")
-        
-        # Download raw content
+
         content = self.client.files.download(file=output_file_name)
 
-        # Save Raw Output
-        os.makedirs(self.output_dir, exist_ok=True)
-        raw_path = f"{self.output_dir}/raw_results.jsonl"
-        with open(raw_path, 'wb') as f:
+        input_path = Path(file_path)
+        # Create 'output' folder inside the input directory
+        results_dir = input_path.parent / "output"
+        results_dir.mkdir(exist_ok=True)
+
+        #Construct new path: parent_dir/output/filename_results.jsonl
+        res_filename = f"{input_path.stem}_results.jsonl"
+        res_path = results_dir / res_filename
+
+        with open(res_path, 'wb') as f:
             f.write(content)
             
         # Parse and Separate Files
-        extract(raw_path)
-        print(raw_path)
-        return raw_path
+        # extract(str(res_path))
+        logger.info(f"Batch Complete. Results at {res_path}")
+        print(res_path)
+        return True
+
 
 
 
 if __name__ == "__main__":
-
-    processor = TextBatchJob(batch_size=10000)
+    processor = TextBatchJob()
     
-    processor.create_jsonl("data/bundles/bundles.jsonl")
+    result = processor.create_jsonl_batches("data/bundles/bundles.jsonl")
     
-    processor.submit_job()
+    if result is None:
+        print("No new data to process.")
+        sys.exit(0)
     
-    processor.wait_for_completion()
+    # Now it is safe to unpack
+    files, final_cursor_pos = result
     
-    raw_path = processor.download_and_parse_results()
-    print("Saved raw result at: ", raw_path)
-
-
-
-
-
-
+    print(f"Plan: Process {len(files)} batch files sequentially.")
+    
+    # Process Sequentially
+    success_count = 0
+    for f in files:
+        if processor.submit_wait_download(f):
+            success_count += 1
+            time.sleep(30)
+        else:
+            logger.error(f"Failed to process {f}. Stopping pipeline.")
+            break
+            
+    # Update Cursor
+    if success_count == len(files):
+        processor._update_cursor(final_cursor_pos)
+        print("All batches processed successfully! Cursor updated.")
+    else:
+        print(f"Pipeline stopped. Processed {success_count}/{len(files)} batches.")

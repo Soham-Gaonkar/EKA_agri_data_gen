@@ -7,14 +7,11 @@ from docx.shared import Pt, RGBColor, Inches
 from docx.enum.text import WD_ALIGN_PARAGRAPH
 from docx.oxml.ns import qn
 
-# --- Configuration ---
-# Use Absolute Path logic to fix "Missing PDF" on Mac
 BASE_DIR = os.path.dirname(os.path.abspath(__file__)) 
 
-# UPDATE THIS PATH to your exact parquet/jsonl location
-INPUT_REL_PATH = "output/agri-advisory-job_1767082735/parsed_results.parquet"
+# INPUT_REL_PATH = "output/agri-advisory-job_1767082735/parsed_results.parquet"
 
-INPUT_PATH = os.path.abspath(INPUT_REL_PATH)
+# INPUT_PATH = os.path.abspath(INPUT_REL_PATH)
 OUTPUT_DOCX = os.path.abspath("final_report_styled.docx")
 OUTPUT_PDF = os.path.abspath("final_report_styled.pdf")
 
@@ -30,7 +27,6 @@ def clean_text(text):
     """
     if not text: return "N/A"
     text = str(text)
-    # Fix literal "\n" strings often found in JSON dumps
     text = text.replace('\\n', '\n').replace('<br>', '\n')
     # Remove wrapper artifacts
     text = text.replace("```json", "").replace("```markdown", "").replace("```", "")
@@ -144,11 +140,9 @@ def add_kv_section(doc, raw_text):
             format_run(run, line, size=10)
 
 def add_entry(doc, obj, idx):
-    # --- VISUAL SEPARATOR ---
     # Create a solid line using a paragraph border logic is hard in python-docx, 
     # so we use a visual text separator or rely on page breaks.
     
-    # --- HEADER: Scenario ID ---
     table = doc.add_table(rows=1, cols=1)
     table.autofit = True
     cell = table.cell(0, 0)
@@ -160,7 +154,7 @@ def add_entry(doc, obj, idx):
     doc.add_paragraph() # Spacer
 
 
-    # --- 1. SYSTEM INSTRUCTIONS (Footer/Meta) ---
+    # SYSTEM INSTRUCTIONS (Footer/Meta)
     doc.add_paragraph("_" * 90).alignment = WD_ALIGN_PARAGRAPH.CENTER # Thin separator
     p_sys_head = doc.add_paragraph()
     format_run(p_sys_head.add_run("System Instructions Used:"), "Sys", bold=True, size=10, color=RGBColor(100, 100, 100))
@@ -168,7 +162,7 @@ def add_entry(doc, obj, idx):
     for run in p_sys.runs:
         format_run(run, run.text, size=10, italic=True, color=RGBColor(105,105,105))
 
-    # --- 2. USER CONTEXT (Structured) ---
+    # 2. USER CONTEXT (Structured) 
     h1 = doc.add_paragraph()
     format_run(h1.add_run("USER INPUT CONTEXT"), "USER INPUT", bold=True, size=10, color=RGBColor(100, 100, 100))
     # Apply shading or box logic here effectively creates a "card"
@@ -176,7 +170,7 @@ def add_entry(doc, obj, idx):
     doc.add_paragraph() 
 
 
-    # --- 3. THOUGHTS (Internal Logic - Indented) ---
+    # THOUGHTS (Internal Logic - Indented) 
     thoughts = obj.get('thoughts', '')
     if thoughts:
         h3 = doc.add_paragraph()
@@ -186,7 +180,7 @@ def add_entry(doc, obj, idx):
         process_markdown_content(doc, thoughts, base_indent=0.25)
         
 
-    # --- 4. ADVISORY (The Core Result) ---
+    # ADVISORY (The Core Result) 
     h4 = doc.add_paragraph()
     # Green header for the solution
     format_run(h4.add_run("GENERATED ADVISORY"), "ADVISORY", bold=True, size=10, color=RGBColor(0, 128, 0)) 
